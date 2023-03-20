@@ -33,7 +33,7 @@ const command: Command = async function (args) {
         content
     });
 
-    const pdf = await generator.generate();
+    const pdf = await generator.generate(html);
 
     const outPath = path.replace(/(\.md)?$/, '.pdf');
 

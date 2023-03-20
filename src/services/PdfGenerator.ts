@@ -1,10 +1,10 @@
 import { existsSync as exists } from 'fs';
 import puppeteer from 'puppeteer';
 import locate from '@giancarl021/locate';
-import { mkdir, rm } from 'fs/promises';
-import copyFiles from 'copyfiles';
+import { mkdir, rm, writeFile } from 'fs/promises';
+import copyFiles from 'recursive-copy';
 
-const srcPath = locate('src/templates');
+const srcPath = locate('src/templates/assets');
 const tmpPath = locate('tmp');
 
 export default function () {
@@ -20,14 +20,16 @@ export default function () {
         }
     }
 
-    async function fillTemp() {
+    async function fillTemp(indexContent: string) {
         await new Promise((resolve, reject) => {
-            copyFiles([srcPath, tmpPath], err => {
+            copyFiles(srcPath, tmpPath, err => {
                 if (err) return reject(err);
 
                 resolve(null);
             });
         });
+
+        await writeFile(`${tmpPath}/index.html`, indexContent);
     }
 
     async function getPdf() {
@@ -41,14 +43,19 @@ export default function () {
             displayHeaderFooter: false
         });
 
+        await page.close();
+        await browser.close();
+
         return pdf;
     }
 
-    async function generate() {
+    async function generate(html: string) {
         await createTemp();
-        await fillTemp();
+        await fillTemp(html);
 
         const pdf = await getPdf();
+
+        await deleteTemp();
 
         return pdf;
     }
