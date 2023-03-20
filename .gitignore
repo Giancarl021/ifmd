@@ -1,3 +1,7 @@
+tmp/
+out/
+lib/
+
 # Logs
 logs
 *.log
