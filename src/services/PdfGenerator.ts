@@ -1,7 +1,8 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { PDFMargin } from 'puppeteer';
 import TempManager from './TempManager';
+import constants from '../util/constants';
 
-export default function () {
+export default function (margins: PDFMargin = constants.pdf.margins.default) {
     const temp = TempManager();
 
     async function getPdf(indexPath: string) {
@@ -12,6 +13,7 @@ export default function () {
 
         const pdf = await page.pdf({
             format: 'A4',
+            margin: margins,
             displayHeaderFooter: false
         });
 

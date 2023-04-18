@@ -9,5 +9,16 @@ export default {
     },
     webServer: {
         defaultPort: 3000
+    },
+    pdf: {
+        margins: {
+            globalDefault: '20px',
+            default: {
+                top: '20px',
+                bottom: '20px',
+                left: '20px',
+                right: '20px'
+            }
+        }
     }
 };

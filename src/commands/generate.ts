@@ -5,6 +5,7 @@ import { readFile, writeFile } from 'fs/promises';
 import ParseMarkdown from '../services/ParseMarkdown';
 import PdfGenerator from '../services/PdfGenerator';
 import TemplateEngine from '../services/TemplateEngine';
+import constants from '../util/constants';
 
 const command: Command = async function (args) {
     const [file] = args;
@@ -15,9 +16,33 @@ const command: Command = async function (args) {
 
     if (!exists(path)) throw new Error(`File ${file} not found`);
 
+    const globalMargin = this.helpers.valueOrDefault(
+        this.helpers.getFlag('m', 'margin'),
+        constants.pdf.margins.globalDefault
+    );
+
+    const margins = {
+        top: this.helpers.valueOrDefault(
+            this.helpers.getFlag('mt', 'margin-top'),
+            globalMargin
+        ),
+        bottom: this.helpers.valueOrDefault(
+            this.helpers.getFlag('mb', 'margin-bottom'),
+            globalMargin
+        ),
+        left: this.helpers.valueOrDefault(
+            this.helpers.getFlag('ml', 'margin-left'),
+            globalMargin
+        ),
+        right: this.helpers.valueOrDefault(
+            this.helpers.getFlag('mr', 'margin-right'),
+            globalMargin
+        )
+    };
+
     const parser = ParseMarkdown();
     const engine = TemplateEngine();
-    const generator = PdfGenerator();
+    const generator = PdfGenerator(margins);
 
     const title: string = this.helpers.valueOrDefault(
         this.helpers.getFlag('t', 'title'),
