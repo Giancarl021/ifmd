@@ -11,6 +11,7 @@ export default {
         defaultPort: 3000
     },
     pdf: {
+        defaultTitle: 'Trabalho',
         margins: {
             globalDefault: '20px',
             default: {

@@ -1,4 +1,5 @@
 import generate from './generate';
 import preview from './preview';
+import setName from './set-name';
 
-export { generate, preview };
+export default { generate, preview, 'set-name': setName };

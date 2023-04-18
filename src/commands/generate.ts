@@ -44,17 +44,20 @@ const command: Command = async function (args) {
     const engine = TemplateEngine();
     const generator = PdfGenerator(margins);
 
-    const title: string = this.helpers.valueOrDefault(
-        this.helpers.getFlag('t', 'title'),
-        'Trabalho'
-    );
-
     const rawContent = await readFile(path, 'utf8');
 
-    const content = parser.convert(rawContent);
+    const name = this.extensions.vault.getData('name') || 'Desconhecido';
+    const date = this.helpers.valueOrDefault(
+        this.helpers.getFlag('date', 'd'),
+        new Date().toLocaleDateString()
+    );
+
+    const { title, content } = parser.convert(rawContent);
 
     const html = engine.generate({
         title,
+        name,
+        date,
         content
     });
 

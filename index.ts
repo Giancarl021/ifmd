@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import CliCore from '@giancarl021/cli-core';
 import { Behavior, HelpDescriptor } from '@giancarl021/cli-core/interfaces';
+import CliCoreVaultExtension from '@giancarl021/cli-core-vault-extension';
 
-import * as commands from './src/commands';
+import commands from './src/commands';
 import help from './src/util/help.json';
+import vaultConfig from './src/util/vaultConfig';
 
 const APP_NAME = 'ifmd';
 const DEBUG_MODE = String(process.env.IFMD_DEBUG).toLowerCase() === 'true';
@@ -29,6 +31,7 @@ async function main() {
         },
         behavior,
         commands,
+        extensions: [CliCoreVaultExtension(vaultConfig)],
         help: _help
     });
 
