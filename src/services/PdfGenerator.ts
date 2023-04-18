@@ -1,42 +1,14 @@
-import { existsSync as exists } from 'fs';
 import puppeteer from 'puppeteer';
-import locate from '@giancarl021/locate';
-import { mkdir, rm, writeFile } from 'fs/promises';
-import copyFiles from 'recursive-copy';
-
-const srcPath = locate('src/templates/assets');
-const tmpPath = locate('tmp');
+import TempManager from './TempManager';
 
 export default function () {
-    async function createTemp() {
-        if (!exists(tmpPath)) {
-            await mkdir(tmpPath, { recursive: true });
-        }
-    }
+    const temp = TempManager();
 
-    async function deleteTemp() {
-        if (exists(tmpPath)) {
-            await rm(tmpPath, { recursive: true, force: true });
-        }
-    }
-
-    async function fillTemp(indexContent: string) {
-        await new Promise((resolve, reject) => {
-            copyFiles(srcPath, tmpPath, err => {
-                if (err) return reject(err);
-
-                resolve(null);
-            });
-        });
-
-        await writeFile(`${tmpPath}/index.html`, indexContent);
-    }
-
-    async function getPdf() {
+    async function getPdf(indexPath: string) {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
 
-        await page.goto(`file://${tmpPath}/index.html`);
+        await page.goto(`file://${indexPath}`);
 
         const pdf = await page.pdf({
             format: 'A4',
@@ -50,12 +22,14 @@ export default function () {
     }
 
     async function generate(html: string) {
-        await createTemp();
-        await fillTemp(html);
+        await temp.create();
+        await temp.fill(html);
 
-        const pdf = await getPdf();
+        const indexPath = temp.getFilePath('index.html');
 
-        await deleteTemp();
+        const pdf = await getPdf(indexPath);
+
+        await temp.remove();
 
         return pdf;
     }

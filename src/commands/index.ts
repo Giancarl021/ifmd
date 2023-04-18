@@ -1,3 +1,4 @@
 import generate from './generate';
+import preview from './preview';
 
-export { generate };
+export { generate, preview };
