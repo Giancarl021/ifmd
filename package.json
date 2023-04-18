@@ -20,6 +20,7 @@
         "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o .github -f",
         "prestart": "yarn build",
         "build": "tsc",
+        "postbuild": "cp -r src/templates lib/src",
         "git-add": "git add ."
     },
     "pre-commit": [
