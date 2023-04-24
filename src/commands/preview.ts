@@ -30,8 +30,9 @@ const command: Command = async function (args) {
 
     const rawContent = await readFile(path, 'utf8');
 
-    const name = this.extensions.vault.getData('name') || 'Desconhecido';
-    const date = this.helpers.valueOrDefault(
+    const props: Record<string, string> =
+        this.extensions.vault.getData(constants.data.propsKey) || {};
+    const date: string = this.helpers.valueOrDefault(
         this.helpers.getFlag('date', 'd'),
         new Date().toLocaleDateString()
     );
@@ -39,15 +40,15 @@ const command: Command = async function (args) {
     const { title, content } = parser.convert(rawContent);
 
     const html = engine.generate({
+        ...props,
         title,
-        name,
         date,
         content
     });
 
     await previewer.preview(html);
 
-    return `Preview ended`;
+    return 'Preview ended';
 };
 
 export default command;

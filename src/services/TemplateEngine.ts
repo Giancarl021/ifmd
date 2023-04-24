@@ -10,15 +10,43 @@ type Variables = Record<string, string> & {
 
 export default function () {
     function generate(variables: Variables) {
-        const html = baseHtml.replace(/@@[a-zA-Z-_]+[0-9]*/g, match => {
+        const html = replaceVariables(baseHtml, variables);
+
+        return html;
+    }
+
+    function replaceVariables(
+        content: string,
+        variables: Variables,
+        level = 0
+    ) {
+        if (level > 1) return content;
+
+        const data = content.replace(/@@[a-zA-Z-_]+[0-9]*/g, match => {
             const key = match.slice(2);
 
             if (!variables.hasOwnProperty(key)) return match;
 
-            return variables[key] ?? '';
+            let result: string;
+
+            switch (key) {
+                case 'content':
+                    result = replaceVariables(
+                        variables.content,
+                        variables,
+                        level + 1
+                    );
+                    break;
+
+                default:
+                    result = variables[key] ?? '';
+                    break;
+            }
+
+            return result;
         });
 
-        return html;
+        return data;
     }
 
     return { generate };

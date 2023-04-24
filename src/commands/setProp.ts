@@ -22,7 +22,7 @@ const command: Command = function (args) {
     if (!trimmedValue)
         throw new Error('Value must be set to a non-empty String');
 
-    this.extensions.vault.setData(key, value);
+    this.extensions.vault.setData(`props.${key}`, value);
 
     return `Global property ${trimmedKey} set to ${trimmedValue}`;
 };
