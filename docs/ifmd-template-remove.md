@@ -7,3 +7,6 @@ Remove a custom template
 ```bash
 ifmd template remove <template-name>
 ```
+
+
+

@@ -7,3 +7,6 @@ Set global properties to be used as variables in templates
 ```bash
 ifmd set-prop <key> <value>
 ```
+
+
+
