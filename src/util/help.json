@@ -39,6 +39,12 @@
                 "description": "Margin right of the rendered PDF. Overwrites the `--margin` flag",
                 "optional": true,
                 "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "t": {
+                "aliases": ["template"],
+                "description": "The template to be used for the PDF. Defaults to `Document`",
+                "optional": true,
+                "values": ["<template-name>"]
             }
         }
     },
@@ -57,6 +63,12 @@
                 "description": "Sets the date of the documents, defaults to `Date.now()`",
                 "optional": true,
                 "values": ["<date verbatim>"]
+            },
+            "t": {
+                "aliases": ["template"],
+                "description": "The template to be used for the PDF. Defaults to `Document`",
+                "optional": true,
+                "values": ["<template-name>"]
             }
         }
     },

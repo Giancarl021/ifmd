@@ -14,7 +14,7 @@
         "ifmd": "lib/index.js"
     },
     "scripts": {
-        "dev": "ts-node index.ts",
+        "dev": "IFMD_DEBUG=true ts-node index.ts",
         "format": "prettier -w --config .prettierrc --ignore-path .gitignore .",
         "start": "node lib/index.js",
         "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o .github -f",

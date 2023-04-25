@@ -11,8 +11,6 @@ export default function () {
         )}.d`
     );
 
-    const tmpPathAssets = locate(`${tmpPath}/assets`);
-
     async function create() {
         if (!exists(tmpPath)) {
             await mkdir(tmpPath, { recursive: true });
@@ -25,9 +23,9 @@ export default function () {
         }
     }
 
-    async function fill(indexContent: string) {
+    async function fill(indexContent: string, rootPath: string) {
         await new Promise((resolve, reject) => {
-            copyFiles(constants.assets.rootPath, tmpPathAssets, err => {
+            copyFiles(rootPath, tmpPath, err => {
                 if (err) return reject(err);
 
                 resolve(null);

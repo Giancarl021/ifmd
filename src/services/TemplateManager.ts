@@ -28,7 +28,7 @@ export default function () {
         const dirContents = await readdir(rootPath);
 
         const templates = await Promise.all(
-            dirContents.map(c => getTemplate(`${rootPath}/${c}`, type))
+            dirContents.map(c => loadTemplate(`${rootPath}/${c}`, type))
         );
 
         const filteredTemplates: TemplateData[] = templates.filter(
@@ -38,7 +38,7 @@ export default function () {
         return filteredTemplates;
     }
 
-    async function getTemplate(directory: string, isNative: boolean) {
+    async function loadTemplate(directory: string, isNative: boolean) {
         const stat = await lstat(directory);
         const isValid =
             stat.isDirectory() && existsSync(`${directory}/manifest.json`);
@@ -121,11 +121,22 @@ export default function () {
         await rm(template.path, { recursive: true });
     }
 
+    async function getTemplate(name: string) {
+        const allTemplates = await getAllTemplates();
+
+        const template = allTemplates.find(t => t.name === name);
+
+        if (!template) throw new Error(`Template "${name}" does not exist`);
+
+        return template;
+    }
+
     return {
         getDefaultTemplates,
         getCustomTemplates,
         getAllTemplates,
         createTemplate,
-        deleteTemplate
+        deleteTemplate,
+        getTemplate
     };
 }

@@ -1,9 +1,9 @@
-import locate from '@giancarl021/locate';
-import { readFileSync } from 'fs';
 import { load } from 'cheerio';
 import constants from '../util/constants';
-
-const baseHtml = readFileSync(locate('src/templates/index.html'), 'utf8');
+import TemplateManager from './TemplateManager';
+import { readFile } from 'fs/promises';
+import locate from '@giancarl021/locate';
+import TemplateData from '../interfaces/TemplateData';
 
 type Variables = Record<string, string> & {
     content: string;
@@ -25,17 +25,25 @@ const socketScript = `
 `;
 
 export default function () {
-    function generate(variables: Variables) {
+    const templateManager = TemplateManager();
+
+    async function generate(template: TemplateData, variables: Variables) {
+        const baseHtml = await readFile(
+            locate(`${template.path}/index.html`),
+            'utf8'
+        );
+
         const html = replaceVariables(baseHtml, variables);
 
         return html;
     }
 
-    function generateForPreview(
+    async function generateForPreview(
+        template: TemplateData,
         variables: Variables,
         previewPort: number = constants.webServer.defaultPort
     ) {
-        const html = generate(variables);
+        const html = await generate(template, variables);
 
         const $ = load(html);
 

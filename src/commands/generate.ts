@@ -6,6 +6,7 @@ import ParseMarkdown from '../services/ParseMarkdown';
 import PdfGenerator from '../services/PdfGenerator';
 import TemplateEngine from '../services/TemplateEngine';
 import constants from '../util/constants';
+import TemplateManager from '../services/TemplateManager';
 
 const command: Command = async function (args) {
     const [file] = args;
@@ -40,9 +41,18 @@ const command: Command = async function (args) {
         )
     };
 
+    const template: string = this.helpers.valueOrDefault(
+        this.helpers.getFlag('t', 'template'),
+        constants.templates.defaultTemplateName
+    );
+
+    const templateManager = TemplateManager();
+
+    const templateData = await templateManager.getTemplate(template);
+
     const parser = ParseMarkdown();
     const engine = TemplateEngine();
-    const generator = PdfGenerator(margins);
+    const generator = PdfGenerator(templateData.path, margins);
 
     const rawContent = await readFile(path, 'utf8');
 
@@ -55,7 +65,7 @@ const command: Command = async function (args) {
 
     const { title, content } = parser.convert(rawContent);
 
-    const html = engine.generate({
+    const html = await engine.generate(templateData, {
         ...props,
         title,
         date,

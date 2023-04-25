@@ -7,6 +7,7 @@ import ParseMarkdown from '../services/ParseMarkdown';
 import TemplateEngine from '../services/TemplateEngine';
 import Previewer from '../services/Previewer';
 import constants from '../util/constants';
+import TemplateManager from '../services/TemplateManager';
 
 const command: Command = async function (args) {
     const [file] = args;
@@ -25,9 +26,18 @@ const command: Command = async function (args) {
 
     if (!exists(path)) throw new Error(`File ${file} not found`);
 
+    const template: string = this.helpers.valueOrDefault(
+        this.helpers.getFlag('t', 'template'),
+        constants.templates.defaultTemplateName
+    );
+
+    const templateManager = TemplateManager();
+
+    const templateData = await templateManager.getTemplate(template);
+
     const parser = ParseMarkdown();
     const engine = TemplateEngine();
-    const previewer = Previewer(port);
+    const previewer = Previewer(templateData, port);
 
     const props: Record<string, string> =
         this.extensions.vault.getData(constants.data.propsKey) || {};
@@ -55,7 +65,8 @@ const command: Command = async function (args) {
 
         const { title, content } = parser.convert(rawContent);
 
-        const html = engine.generateForPreview(
+        const html = await engine.generateForPreview(
+            templateData,
             {
                 ...props,
                 title,

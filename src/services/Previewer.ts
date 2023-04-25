@@ -5,6 +5,7 @@ import TempManager from './TempManager';
 import constants from '../util/constants';
 import { Socket } from 'net';
 import Nullable from '../interfaces/Nullable';
+import TemplateData from '../interfaces/TemplateData';
 
 type ServeHandlerOptions = Parameters<typeof serveHandler>[2];
 interface Context {
@@ -13,7 +14,10 @@ interface Context {
     connections: Set<Socket>;
 }
 
-export default function (port: number = constants.webServer.defaultPort) {
+export default function (
+    template: TemplateData,
+    port: number = constants.webServer.defaultPort
+) {
     const context: Nullable<Context> = {
         server: null,
         socketServer: null,
@@ -44,7 +48,7 @@ export default function (port: number = constants.webServer.defaultPort) {
 
     async function preview(html: string) {
         await temp.create();
-        await temp.fill(html);
+        await temp.fill(html, template.path);
 
         const serveHandlerOptions: ServeHandlerOptions = {
             public: temp.getRootPath(),
