@@ -4,16 +4,17 @@ import serveHandler from 'serve-handler';
 import TempManager from './TempManager';
 import constants from '../util/constants';
 import { Socket } from 'net';
+import Nullable from '../interfaces/Nullable';
 
 type ServeHandlerOptions = Parameters<typeof serveHandler>[2];
 interface Context {
-    server: ServerType | null;
-    socketServer: InstanceType<typeof Server> | null;
+    server: ServerType;
+    socketServer: InstanceType<typeof Server>;
     connections: Set<Socket>;
 }
 
 export default function (port: number = constants.webServer.defaultPort) {
-    const context: Context = {
+    const context: Nullable<Context> = {
         server: null,
         socketServer: null,
         connections: new Set()

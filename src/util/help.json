@@ -43,7 +43,7 @@
         }
     },
     "preview": {
-        "description": "Create a Web Server",
+        "description": "Create a web preview of the rendered document with live reload on changes",
         "args": ["path/to/file"],
         "flags": {
             "p": {
@@ -60,8 +60,48 @@
             }
         }
     },
-    "set-name": {
-        "description": "Set the author name for new PDF generations",
-        "args": ["name"]
+    "set-prop": {
+        "description": "Set global properties to be used as variables in templates",
+        "args": ["key", "value"]
+    },
+    "template": {
+        "description": "",
+        "subcommands": {
+            "list": {
+                "description": "List all available templates",
+                "flags": {
+                    "v": {
+                        "aliases": ["verbose"],
+                        "optional": true,
+                        "description": "Show detailed information about the templates"
+                    },
+                    "j": {
+                        "aliases": ["json"],
+                        "optional": true,
+                        "description": "Show the templates in a verbose JSON format"
+                    }
+                }
+            },
+            "show": {
+                "args": ["template-name"],
+                "description": "Show a custom template's source code in the file explorer"
+            },
+            "create": {
+                "description": "Create a new custom template",
+                "args": ["template-name"],
+                "flags": {
+                    "s": {
+                        "aliases": ["seed"],
+                        "description": "The base template to be used as a seed for the new template. Defaults to `Document`",
+                        "optional": true,
+                        "values": ["<existing-template-name>"]
+                    }
+                }
+            },
+            "remove": {
+                "description": "Remove a custom template",
+                "args": ["template-name"]
+            }
+        }
     }
 }

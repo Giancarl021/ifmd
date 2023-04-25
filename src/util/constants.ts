@@ -3,7 +3,8 @@ import locate from '@giancarl021/locate';
 export default {
     templates: {
         customRootPath: locate('~/.ifmd/templates'),
-        defaultRootPath: locate('src/templates')
+        defaultRootPath: locate('src/templates'),
+        defaultTemplateName: 'Document'
     },
     data: {
         rootPath: locate('~/.ifmd'),

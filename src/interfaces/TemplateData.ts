@@ -1,7 +1,8 @@
 interface TemplateData {
     name: string;
-    manifest: {};
-    type: 'custom' | 'default';
+    createdAt: Date;
+    path: string;
+    isNative: boolean;
 }
 
 export default TemplateData;

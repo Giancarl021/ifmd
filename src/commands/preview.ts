@@ -39,6 +39,8 @@ const command: Command = async function (args) {
     const watcher = chokidar.watch(path);
 
     watcher.on('change', async () => {
+        console.log('Changes detected, reloading preview...');
+
         const html = await generateHtml();
 
         await previewer.update(html);
