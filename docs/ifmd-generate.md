@@ -15,4 +15,5 @@ ifmd generate <path/to/file> <flags>
 -   `-d` | `--date`: Sets the date of the documents, defaults to `Date.now()`. Value: `<date verbatim>`;
 -   `--mb` | `--margin-bottom`: Margin bottom of the rendered PDF. Overwrites the `--margin` flag. Values: `<value>` | `<value>px` | `<value>cm`;
 -   `--ml` | `--margin-left`: Margin left of the rendered PDF. Overwrites the `--margin` flag. Values: `<value>` | `<value>px` | `<value>cm`;
--   `--mr` | `--margin-right`: Margin right of the rendered PDF. Overwrites the `--margin` flag. Values: `<value>` | `<value>px` | `<value>cm`.
+-   `--mr` | `--margin-right`: Margin right of the rendered PDF. Overwrites the `--margin` flag. Values: `<value>` | `<value>px` | `<value>cm`;
+-   `-t` | `--template`: The template to be used for the PDF. Defaults to `Document`. Value: `<template-name>`.

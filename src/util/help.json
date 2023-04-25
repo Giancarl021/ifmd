@@ -77,7 +77,7 @@
         "args": ["key", "value"]
     },
     "template": {
-        "description": "",
+        "description": "Manage custom templates",
         "subcommands": {
             "list": {
                 "description": "List all available templates",
