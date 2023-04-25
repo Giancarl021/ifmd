@@ -14,7 +14,7 @@
         "ifmd": "lib/index.js"
     },
     "scripts": {
-        "dev": "ts-node index.ts",
+        "dev": "IFMD_DEBUG=true ts-node index.ts",
         "format": "prettier -w --config .prettierrc --ignore-path .gitignore .",
         "start": "node lib/index.js",
         "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o .github -f",
@@ -33,24 +33,24 @@
         "@giancarl021/cli-core-vault-extension": "^0.1.4",
         "@giancarl021/locate": "^0.1.6",
         "cheerio": "^1.0.0-rc.12",
+        "chokidar": "^3.5.3",
         "dompurify": "^3.0.1",
         "escape-html": "^1.0.3",
         "jsdom": "^21.1.0",
         "marked": "^4.2.12",
         "puppeteer": "^19.7.5",
         "recursive-copy": "^2.0.14",
-        "serve-handler": "^6.1.5"
+        "serve-handler": "^6.1.5",
+        "socket.io": "^4.6.1"
     },
     "devDependencies": {
         "@giancarl021/cli-core-docs-generator": "^0.1.0",
-        "@types/copyfiles": "^2.4.1",
         "@types/dompurify": "^2.4.0",
         "@types/escape-html": "^1.0.2",
         "@types/jsdom": "^21.1.0",
         "@types/marked": "^4.0.8",
         "@types/node": "^18.14.6",
         "@types/serve-handler": "^6.1.1",
-        "copyfiles": "^2.4.1",
         "pre-commit": "^1.2.2",
         "prettier": "^2.8.4",
         "ts-node": "^10.9.1",

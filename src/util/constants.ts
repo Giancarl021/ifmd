@@ -1,11 +1,18 @@
 import locate from '@giancarl021/locate';
 
 export default {
+    templates: {
+        customRootPath: locate('~/.ifmd/templates'),
+        defaultRootPath: locate('src/templates'),
+        defaultTemplateName: 'Document'
+    },
+    data: {
+        rootPath: locate('~/.ifmd'),
+        varKeyRegex: /^[0-9a-zA-z-_]+$/,
+        propsKey: 'props'
+    },
     temp: {
         rootPath: locate('tmp')
-    },
-    assets: {
-        rootPath: locate('src/templates/assets')
     },
     webServer: {
         defaultPort: 3000

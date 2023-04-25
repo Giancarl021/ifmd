@@ -1,65 +1,89 @@
-import { IncomingMessage, ServerResponse, createServer } from 'http';
+import { Server as ServerType, createServer } from 'http';
+import { Server } from 'socket.io';
 import serveHandler from 'serve-handler';
 import TempManager from './TempManager';
 import constants from '../util/constants';
+import { Socket } from 'net';
+import Nullable from '../interfaces/Nullable';
+import TemplateData from '../interfaces/TemplateData';
 
+type ServeHandlerOptions = Parameters<typeof serveHandler>[2];
 interface Context {
-    server: ReturnType<typeof createServer> | null;
+    server: ServerType;
+    socketServer: InstanceType<typeof Server>;
+    connections: Set<Socket>;
 }
 
-export default function (port: number = constants.webServer.defaultPort) {
-    const context: Context = {
-        server: null
+export default function (
+    template: TemplateData,
+    port: number = constants.webServer.defaultPort
+) {
+    const context: Nullable<Context> = {
+        server: null,
+        socketServer: null,
+        connections: new Set()
     };
 
     const temp = TempManager();
-
-    function getServerRequestHandler() {
-        const options = {
-            public: temp.getRootPath()
-        };
-
-        return (
-            request: IncomingMessage,
-            response: ServerResponse<IncomingMessage>
-        ) => serveHandler(request, response, options);
-    }
-
-    function serverListeningHandler() {
-        console.log(`Preview available at http://localhost:${port}/index.html`);
-    }
 
     async function sigIntHandler() {
         console.log('Closing web server...');
 
         if (context.server) {
             await new Promise((resolve, reject) => {
+                for (const socket of context.connections.values()) {
+                    socket.destroy();
+                }
+
                 context.server!.close(err => {
                     if (err) return reject(err);
-                    resolve(null);
+                    return resolve(null);
                 });
             });
-
-            console.log('Removing temporary files...');
-            await temp.remove();
         }
 
-        console.log('Preview ended');
-        process.exit(0);
+        console.log('Removing temporary files...');
+        await temp.remove();
     }
 
     async function preview(html: string) {
         await temp.create();
-        await temp.fill(html);
+        await temp.fill(html, template.path);
 
-        context.server = createServer(getServerRequestHandler());
+        const serveHandlerOptions: ServeHandlerOptions = {
+            public: temp.getRootPath(),
+            cleanUrls: true,
+            directoryListing: false
+        };
 
-        context.server.listen(port, serverListeningHandler);
+        context.server = createServer((req, res) =>
+            serveHandler(req, res, serveHandlerOptions)
+        );
 
-        process.on('SIGINT', sigIntHandler);
+        context.socketServer = new Server(context.server);
+
+        context.server.listen(port, () =>
+            console.log(`Preview available on http://localhost:${port}`)
+        );
+        context.server.on('connection', socket => {
+            context.connections.add(socket);
+            socket.on('close', () => context.connections.delete(socket));
+        });
+
+        await new Promise(resolve => {
+            process.on('SIGINT', () => {
+                sigIntHandler().then(resolve);
+            });
+        });
+    }
+
+    async function update(html: string) {
+        await temp.write('index.html', html);
+        if (context.socketServer) context.socketServer.emit('reload');
     }
 
     return {
-        preview
+        preview,
+        update
     };
 }

@@ -2,7 +2,10 @@ import puppeteer, { PDFMargin } from 'puppeteer';
 import TempManager from './TempManager';
 import constants from '../util/constants';
 
-export default function (margins: PDFMargin = constants.pdf.margins.default) {
+export default function (
+    templatePath: string,
+    margins: PDFMargin = constants.pdf.margins.default
+) {
     const temp = TempManager();
 
     async function getPdf(indexPath: string) {
@@ -25,7 +28,7 @@ export default function (margins: PDFMargin = constants.pdf.margins.default) {
 
     async function generate(html: string) {
         await temp.create();
-        await temp.fill(html);
+        await temp.fill(html, templatePath);
 
         const indexPath = temp.getFilePath('index.html');
 

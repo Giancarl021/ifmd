@@ -6,6 +6,7 @@ import ParseMarkdown from '../services/ParseMarkdown';
 import PdfGenerator from '../services/PdfGenerator';
 import TemplateEngine from '../services/TemplateEngine';
 import constants from '../util/constants';
+import TemplateManager from '../services/TemplateManager';
 
 const command: Command = async function (args) {
     const [file] = args;
@@ -40,30 +41,46 @@ const command: Command = async function (args) {
         )
     };
 
+    const template: string = this.helpers.valueOrDefault(
+        this.helpers.getFlag('t', 'template'),
+        constants.templates.defaultTemplateName
+    );
+
+    const templateManager = TemplateManager();
+
+    const templateData = await templateManager.getTemplate(template);
+
     const parser = ParseMarkdown();
     const engine = TemplateEngine();
-    const generator = PdfGenerator(margins);
+    const generator = PdfGenerator(templateData.path, margins);
 
     const rawContent = await readFile(path, 'utf8');
 
-    const name = this.extensions.vault.getData('name') || 'Desconhecido';
-    const date = this.helpers.valueOrDefault(
+    const props: Record<string, string> =
+        this.extensions.vault.getData(constants.data.propsKey) || {};
+    const date: string = this.helpers.valueOrDefault(
         this.helpers.getFlag('date', 'd'),
         new Date().toLocaleDateString()
     );
 
     const { title, content } = parser.convert(rawContent);
 
-    const html = engine.generate({
+    const html = await engine.generate(templateData, {
+        ...props,
         title,
-        name,
         date,
         content
     });
 
     const pdf = await generator.generate(html);
 
-    const outPath = path.replace(/(\.md)?$/, '.pdf');
+    const outPath = locate(
+        this.helpers.valueOrDefault(
+            this.helpers.getFlag('o', 'out', 'output'),
+            path.replace(/(\.md)?$/, '.pdf')
+        ),
+        true
+    );
 
     await writeFile(outPath, pdf);
 
