@@ -1,5 +1,6 @@
 import { Command } from '@giancarl021/cli-core/interfaces';
 import locate from '@giancarl021/locate';
+import chokidar from 'chokidar';
 import { existsSync as exists } from 'fs';
 import { readFile } from 'fs/promises';
 import ParseMarkdown from '../services/ParseMarkdown';
@@ -28,8 +29,6 @@ const command: Command = async function (args) {
     const engine = TemplateEngine();
     const previewer = Previewer(port);
 
-    const rawContent = await readFile(path, 'utf8');
-
     const props: Record<string, string> =
         this.extensions.vault.getData(constants.data.propsKey) || {};
     const date: string = this.helpers.valueOrDefault(
@@ -37,16 +36,37 @@ const command: Command = async function (args) {
         new Date().toLocaleDateString()
     );
 
-    const { title, content } = parser.convert(rawContent);
+    const watcher = chokidar.watch(path);
 
-    const html = engine.generate({
-        ...props,
-        title,
-        date,
-        content
+    watcher.on('change', async () => {
+        const html = await generateHtml();
+
+        await previewer.update(html);
     });
 
-    await previewer.preview(html);
+    const initialHtml = await generateHtml();
+
+    await previewer.preview(initialHtml);
+
+    async function generateHtml() {
+        const rawContent = await readFile(path, 'utf8');
+
+        const { title, content } = parser.convert(rawContent);
+
+        const html = engine.generateForPreview(
+            {
+                ...props,
+                title,
+                date,
+                content
+            },
+            port
+        );
+
+        return html;
+    }
+
+    await watcher.close();
 
     return 'Preview ended';
 };
