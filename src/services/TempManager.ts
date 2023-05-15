@@ -23,7 +23,19 @@ export default function () {
         }
     }
 
+    async function loadLibraries() {
+        for (const lib in constants.frontEndLibs) {
+            const path =
+                constants.frontEndLibs[
+                    lib as keyof typeof constants.frontEndLibs
+                ];
+
+            await copyFiles(path, `${tmpPath}/__injected_libs__/${lib}`);
+        }
+    }
+
     async function fill(indexContent: string, rootPath: string) {
+        await loadLibraries();
         await new Promise((resolve, reject) => {
             copyFiles(rootPath, tmpPath, err => {
                 if (err) return reject(err);

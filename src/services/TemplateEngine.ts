@@ -1,6 +1,5 @@
 import { load } from 'cheerio';
 import constants from '../util/constants';
-import TemplateManager from './TemplateManager';
 import { readFile } from 'fs/promises';
 import locate from '@giancarl021/locate';
 import TemplateData from '../interfaces/TemplateData';
@@ -25,9 +24,12 @@ const socketScript = `
 `;
 
 export default function () {
-    const templateManager = TemplateManager();
-
-    async function generate(template: TemplateData, variables: Variables) {
+    async function _generate(
+        template: TemplateData,
+        variables: Variables,
+        serverPort: number,
+        isPreview: boolean = false
+    ) {
         const baseHtml = await readFile(
             locate(`${template.path}/index.html`),
             'utf8'
@@ -35,7 +37,42 @@ export default function () {
 
         const html = replaceVariables(baseHtml, variables);
 
-        return html;
+        const $ = load(html);
+
+        $('head').append(
+            `<script type="module" src="http://localhost:${serverPort}/__injected_libs__/mermaid/dist/mermaid.esm.min.mjs"></script>`
+        );
+
+        $('code.language-mermaid').each(function () {
+            const $el = $(this);
+
+            const content = $el.text();
+
+            const $parent = $el.parent();
+
+            $el.remove('code');
+
+            $parent.addClass('mermaid');
+            $parent.text(content);
+        });
+
+        if (isPreview) {
+            $('head')
+                .append(
+                    `<script src="http://localhost:${serverPort}/socket.io/socket.io.js"></script>`
+                )
+                .append(socketScript);
+        }
+
+        return $.html();
+    }
+
+    async function generate(
+        template: TemplateData,
+        variables: Variables,
+        serverPort: number
+    ) {
+        return await _generate(template, variables, serverPort, false);
     }
 
     async function generateForPreview(
@@ -43,19 +80,7 @@ export default function () {
         variables: Variables,
         previewPort: number = constants.webServer.defaultPort
     ) {
-        const html = await generate(template, variables);
-
-        const $ = load(html);
-
-        $('head')
-            .append(
-                `<script src="http://localhost:${previewPort}/socket.io/socket.io.js"></script>`
-            )
-            .append(socketScript);
-
-        const socketReadyHtml = $.html();
-
-        return socketReadyHtml;
+        return await _generate(template, variables, previewPort, true);
     }
 
     function replaceVariables(

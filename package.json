@@ -38,6 +38,7 @@
         "escape-html": "^1.0.3",
         "jsdom": "^21.1.0",
         "marked": "^4.2.12",
+        "mermaid": "^10.1.0",
         "puppeteer": "^19.7.5",
         "recursive-copy": "^2.0.14",
         "serve-handler": "^6.1.5",
