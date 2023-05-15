@@ -20,7 +20,7 @@
         "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o . -f",
         "prestart": "yarn build",
         "build": "tsc",
-        "postbuild": "mkdir -p lib/node_modules/mermaid && cp -r src/templates lib/src && yes | cp -rf node_modules/mermaid lib/node_modules/mermaid",
+        "postbuild": "mkdir -p lib/node_modules/mermaid && cp -r src/templates lib/src && yes | cp -rf node_modules/mermaid lib/node_modules",
         "git-add": "git add ."
     },
     "pre-commit": [
