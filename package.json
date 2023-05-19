@@ -18,9 +18,10 @@
         "format": "prettier -w --config .prettierrc --ignore-path .prettierignore .",
         "start": "node lib/index.js",
         "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o . -f",
-        "prestart": "yarn build",
+        "prepreview": "yarn build",
+        "preview": "node lib/index.js",
         "build": "tsc",
-        "postbuild": "mkdir -p lib/node_modules/mermaid && cp -r src/templates lib/src && yes | cp -rf node_modules/mermaid lib/node_modules",
+        "postbuild": "node scripts/postbuild.js",
         "git-add": "git add ."
     },
     "pre-commit": [

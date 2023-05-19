@@ -12,7 +12,9 @@ export default function (
     const webServer = WebServer(serverPort, temp.getRootPath(), false);
 
     async function getPdf(indexPath: string) {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: 'new'
+        });
         const page = await browser.newPage();
 
         await page.goto(indexPath);
