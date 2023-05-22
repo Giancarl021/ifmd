@@ -3,11 +3,14 @@ import constants from '../util/constants';
 import { readFile } from 'fs/promises';
 import locate from '@giancarl021/locate';
 import TemplateData from '../interfaces/TemplateData';
+import parseDate from '../util/parseDate';
 
 type Variables = Record<string, string> & {
     content: string;
     title: string;
 };
+
+const operandRegex = /\(.*?\)/;
 
 const socketScript = `
 <script>
@@ -90,29 +93,41 @@ export default function () {
     ) {
         if (level > 1) return content;
 
-        const data = content.replace(/@@[a-zA-Z-_]+[0-9]*/g, match => {
-            const key = match.slice(2);
+        const data = content.replace(
+            /@@[a-zA-Z-_]+[0-9]*(\(.*?\))?/g,
+            match => {
+                const key = match.slice(2).replace(operandRegex, '');
 
-            if (!variables.hasOwnProperty(key)) return match;
+                const operand = (match.match(operandRegex)?.[0] ?? '').replace(
+                    /^\(|\)$/g,
+                    ''
+                );
+                const value = variables[key] ?? '';
 
-            let result: string;
+                if (!variables.hasOwnProperty(key)) return match;
 
-            switch (key) {
-                case 'content':
-                    result = replaceVariables(
-                        variables.content,
-                        variables,
-                        level + 1
-                    );
-                    break;
+                let result: string;
 
-                default:
-                    result = variables[key] ?? '';
-                    break;
+                switch (key) {
+                    case 'content':
+                        result = replaceVariables(
+                            variables.content,
+                            variables,
+                            level + 1
+                        );
+                        break;
+                    case 'date':
+                        result = parseDate(value, operand);
+                        break;
+
+                    default:
+                        result = value;
+                        break;
+                }
+
+                return result;
             }
-
-            return result;
-        });
+        );
 
         return data;
     }
