@@ -2,8 +2,6 @@
 
 ![](docs/assets/logo.svg)
 
-@@date(-1d)
-
 Simple Markdown-to-pdf renderer for my college assignments.
 
 ## Commands
