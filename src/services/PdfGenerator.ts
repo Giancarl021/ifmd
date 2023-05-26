@@ -30,7 +30,9 @@ export default function (
         const pdf = await page.pdf({
             format: 'A4',
             margin: margins,
-            displayHeaderFooter: false
+            displayHeaderFooter: false,
+            printBackground: true,
+            preferCSSPageSize: true
         });
 
         await page.close();

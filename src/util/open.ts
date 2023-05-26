@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { platform } from 'os';
 
 const openCommandMap = {
-    win32: 'start',
+    win32: 'explorer',
     linux: 'xdg-open',
     darwin: 'open',
     default: 'open'

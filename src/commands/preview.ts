@@ -46,7 +46,9 @@ const command: Command = async function (args) {
         new Date().toLocaleDateString()
     );
 
-    const watcher = chokidar.watch(path);
+    const watcher = chokidar.watch(path, {
+        awaitWriteFinish: true
+    });
 
     watcher.on('change', async () => {
         console.log('Changes detected, reloading preview...');
