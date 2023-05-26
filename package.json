@@ -8,7 +8,8 @@
     "license": "MIT",
     "private": false,
     "files": [
-        "lib/**/*"
+        "lib/**/*",
+        "!lib/tmp/"
     ],
     "bin": {
         "ifmd": "lib/index.js"
