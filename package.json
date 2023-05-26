@@ -1,5 +1,5 @@
 {
-    "name": "ifmd",
+    "name": "@giancarl021/ifmd",
     "version": "0.1.0",
     "description": "Simple Markdown-to-pdf renderer for my college assignments",
     "main": "lib/index.js",
@@ -16,8 +16,9 @@
     "scripts": {
         "dev": "IFMD_DEBUG=true ts-node index.ts",
         "format": "prettier -w --config .prettierrc --ignore-path .prettierignore .",
+        "ci": "yarn install --frozen-lockfile",
         "start": "node lib/index.js",
-        "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o . -f",
+        "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o .github -f",
         "prepreview": "yarn build",
         "preview": "node lib/index.js",
         "build": "tsc",

@@ -1,17 +1,11 @@
 # ifmd
 
-![](docs/assets/logo.svg)
+![](../src/templates/Document/assets/img/favicon.svg)
 
-Simple Markdown-to-pdf renderer for my college assignments.
+Markdown-to-PDF renderer for my college assignments that allows custom templates.
 
-## Commands
-[//]: # (Insert any custom documentation ABOVE this line)
-[//]: # (DOCS_START)
+> **Info:** This package is not meant to be used in production environments.
 
-* [generate](docs/ifmd-generate.md): Generate a PDF file from a Markdown file on the same directory;
-* [preview](docs/ifmd-preview.md): Create a web preview of the rendered document with live reload on changes;
-* [set-prop](docs/ifmd-set-prop.md): Set global properties to be used as variables in templates;
-* [template](docs/ifmd-template.md): Manage custom templates.
+## Documentation and Source Code
 
-[//]: # (DOCS_END)
-[//]: # (Insert any custom documentation BELOW this line)
+The documentation and source code of this project can be found [here](https://github.com/Giancarl021/ifmd).
