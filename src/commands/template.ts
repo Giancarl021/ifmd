@@ -140,7 +140,7 @@ const commands: Commands = {
         const props: Record<string, string> =
             this.extensions.vault.getData(constants.data.propsKey) || {};
         const date: string = this.helpers.valueOrDefault(
-            this.helpers.getFlag('date', 'd'),
+            this.helpers.getFlag('d', 'date'),
             new Date().toLocaleDateString()
         );
 
