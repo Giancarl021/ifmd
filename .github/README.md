@@ -22,8 +22,9 @@ ifmd <command> [options]
 [//]: # (Insert any custom documentation ABOVE this line)
 [//]: # (DOCS_START)
 
-* [generate](docs/ifmd-generate.md): Generate a PDF file from a Markdown file on the same directory;
+* [generate](docs/ifmd-generate.md): Generate a PDF file from a Markdown file;
 * [preview](docs/ifmd-preview.md): Create a web preview of the rendered document with live reload on changes;
+* [compile](docs/ifmd-compile.md): Compile multiple Markdown files into a single PDF file;
 * [set-prop](docs/ifmd-set-prop.md): Set global properties to be used as variables in templates;
 * [template](docs/ifmd-template.md): Manage custom templates.
 

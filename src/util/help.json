@@ -1,7 +1,7 @@
 {
     "$schema": "https://gist.githubusercontent.com/Giancarl021/127020c9cecb032beff587e308bec4ca/raw/af14cd087c7f3f2f1b1d6a6daec6f82699a44973/@giancarl021__cli-core__help-descriptor.schema.json",
     "generate": {
-        "description": "Generate a PDF file from a Markdown file on the same directory",
+        "description": "Generate a PDF file from a Markdown file",
         "args": ["path/to/file"],
         "flags": {
             "m": {
@@ -45,6 +45,18 @@
                 "description": "The template to be used for the PDF. Defaults to `Document`",
                 "optional": true,
                 "values": ["<template-name>"]
+            },
+            "o": {
+                "aliases": ["out", "output"],
+                "description": "The path to the output file. Defaults to the same as the input file but with the `.pdf` extension",
+                "optional": true,
+                "values": ["<path/to/file>"]
+            },
+            "p": {
+                "aliases": ["port"],
+                "description": "The port for the web server to listen to. Defaults to `3000`",
+                "optional": true,
+                "values": ["<number>"]
             }
         }
     },
@@ -69,6 +81,65 @@
                 "description": "The template to be used for the PDF. Defaults to `Document`",
                 "optional": true,
                 "values": ["<template-name>"]
+            }
+        }
+    },
+    "compile": {
+        "description": "Compile multiple Markdown files into a single PDF file",
+        "args": ["path/to/directory"],
+        "flags": {
+            "g": {
+                "aliases": ["generate-manifest"],
+                "description": "Generate or update a manifest file for later compilation",
+                "optional": true
+            },
+            "i": {
+                "aliases": ["ignore"],
+                "description": "Path to a .ignore file, like .gitignore, to filter out unwanted markdown files",
+                "optional": true,
+                "values": ["<path/to/file>"]
+            },
+            "d": {
+                "aliases": ["date"],
+                "description": "Sets the date of the documents, defaults to `Date.now()`",
+                "optional": true,
+                "values": ["<date verbatim>"]
+            },
+            "mb": {
+                "aliases": ["margin-bottom"],
+                "description": "Margin bottom of the rendered PDF. Overwrites the `--margin` flag",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "ml": {
+                "aliases": ["margin-left"],
+                "description": "Margin left of the rendered PDF. Overwrites the `--margin` flag",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "mr": {
+                "aliases": ["margin-right"],
+                "description": "Margin right of the rendered PDF. Overwrites the `--margin` flag",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "t": {
+                "aliases": ["template"],
+                "description": "The template to be used for the PDF. Defaults to `Document`",
+                "optional": true,
+                "values": ["<template-name>"]
+            },
+            "o": {
+                "aliases": ["out", "output"],
+                "description": "The path to the output file. Defaults to the same as the input file but with the `.pdf` extension",
+                "optional": true,
+                "values": ["<path/to/file>"]
+            },
+            "p": {
+                "aliases": ["port"],
+                "description": "The port for the web server to listen to. Defaults to `3000`",
+                "optional": true,
+                "values": ["<number>"]
             }
         }
     },
@@ -113,6 +184,30 @@
             "remove": {
                 "description": "Remove a custom template",
                 "args": ["template-name"]
+            },
+            "preview": {
+                "description": "Create a web preview of the specified template with a sample document and live reload on changes",
+                "args": ["template-name"],
+                "flags": {
+                    "p": {
+                        "aliases": ["port"],
+                        "description": "The port for the web server to listen to. Defaults to `3000`",
+                        "optional": true,
+                        "values": ["<number>"]
+                    },
+                    "d": {
+                        "aliases": ["date"],
+                        "description": "Sets the date of the documents, defaults to `Date.now()`",
+                        "optional": true,
+                        "values": ["<date verbatim>"]
+                    },
+                    "f": {
+                        "aliases": ["base-file"],
+                        "description": "The sample Markdown file used for the preview. If not set a internal sample will be used",
+                        "optional": true,
+                        "values": ["<path/to/file>"]
+                    }
+                }
             }
         }
     }
