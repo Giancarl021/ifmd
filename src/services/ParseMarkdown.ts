@@ -11,16 +11,24 @@ const purify = DOMPurify(window);
 marked.use(markedKatex());
 
 export default function () {
-    function convert(markdown: string) {
+    function parse(markdown: string) {
         const html = marked(markdown);
 
         const sanitized = purify.sanitize(html);
 
-        const $ = load(sanitized);
+        return sanitized;
+    }
 
-        const title = $('h1:first-child').text() || constants.pdf.defaultTitle;
+    function convert(markdown: string) {
+        const html = parse(markdown);
 
-        $('h1:first-child').remove();
+        const $ = load(html);
+
+        const $h1 = $('h1:first-child');
+
+        const title = $h1.text() || constants.pdf.defaultTitle;
+
+        $h1.remove();
 
         return {
             title,
@@ -28,7 +36,26 @@ export default function () {
         };
     }
 
+    function convertWithMetadata(markdown: string, index: number = 0) {
+        const html = parse(markdown);
+
+        const $ = load(html);
+
+        const $h1 = $('h1:first-child');
+
+        const title = $h1.text() || `${constants.pdf.defaultTitle} ${++index}`;
+
+        const titleId = $h1.attr('id') || null;
+
+        return {
+            title,
+            titleId,
+            content: $.html()
+        };
+    }
+
     return {
-        convert
+        convert,
+        convertWithMetadata
     };
 }

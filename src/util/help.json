@@ -45,6 +45,18 @@
                 "description": "The template to be used for the PDF. Defaults to `Document`",
                 "optional": true,
                 "values": ["<template-name>"]
+            },
+            "o": {
+                "aliases": ["out", "output"],
+                "description": "The path to the output file. Defaults to the same as the input file but with the `.pdf` extension",
+                "optional": true,
+                "values": ["<path/to/file>"]
+            },
+            "p": {
+                "aliases": ["port"],
+                "description": "The port for the web server to listen to. Defaults to `3000`",
+                "optional": true,
+                "values": ["<number>"]
             }
         }
     },
@@ -86,6 +98,48 @@
                 "description": "Path to a .ignore file, like .gitignore, to filter out unwanted markdown files",
                 "optional": true,
                 "values": ["<path/to/file>"]
+            },
+            "d": {
+                "aliases": ["date"],
+                "description": "Sets the date of the documents, defaults to `Date.now()`",
+                "optional": true,
+                "values": ["<date verbatim>"]
+            },
+            "mb": {
+                "aliases": ["margin-bottom"],
+                "description": "Margin bottom of the rendered PDF. Overwrites the `--margin` flag",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "ml": {
+                "aliases": ["margin-left"],
+                "description": "Margin left of the rendered PDF. Overwrites the `--margin` flag",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "mr": {
+                "aliases": ["margin-right"],
+                "description": "Margin right of the rendered PDF. Overwrites the `--margin` flag",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "t": {
+                "aliases": ["template"],
+                "description": "The template to be used for the PDF. Defaults to `Document`",
+                "optional": true,
+                "values": ["<template-name>"]
+            },
+            "o": {
+                "aliases": ["out", "output"],
+                "description": "The path to the output file. Defaults to the same as the input file but with the `.pdf` extension",
+                "optional": true,
+                "values": ["<path/to/file>"]
+            },
+            "p": {
+                "aliases": ["port"],
+                "description": "The port for the web server to listen to. Defaults to `3000`",
+                "optional": true,
+                "values": ["<number>"]
             }
         }
     },
