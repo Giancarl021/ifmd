@@ -1,4 +1,11 @@
 import locate from '@giancarl021/locate';
+import CompilationData from '../interfaces/CompilationData';
+
+const defaultManifest: Omit<CompilationData, 'files' | 'path' | 'createdAt'> = {
+    title: 'Compilation',
+    description: null,
+    generateIndex: true
+};
 
 export default {
     templates: {
@@ -6,6 +13,18 @@ export default {
         defaultRootPath: locate('src/templates'),
         defaultTemplateName: 'Document',
         defaultSampleTemplateFile: locate('src/templates/sample.md')
+    } as const,
+    compilation: {
+        getDefaultManifest(root: string, files: string[]) {
+            const manifest: CompilationData = {
+                ...defaultManifest,
+                files,
+                createdAt: new Date(),
+                path: root
+            };
+
+            return manifest;
+        }
     } as const,
     data: {
         rootPath: locate('~/.ifmd'),
