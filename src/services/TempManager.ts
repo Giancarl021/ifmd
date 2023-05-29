@@ -34,6 +34,11 @@ export default function () {
         }
     }
 
+    async function clear() {
+        await remove();
+        await create();
+    }
+
     async function fill(indexContent: string, rootPath: string) {
         await loadLibraries();
         await new Promise((resolve, reject) => {
@@ -66,6 +71,7 @@ export default function () {
     return {
         create,
         remove,
+        clear,
         fill,
         write,
         read,

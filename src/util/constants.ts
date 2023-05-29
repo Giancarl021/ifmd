@@ -4,7 +4,8 @@ export default {
     templates: {
         customRootPath: locate('~/.ifmd/templates'),
         defaultRootPath: locate('src/templates'),
-        defaultTemplateName: 'Document'
+        defaultTemplateName: 'Document',
+        defaultSampleTemplateFile: locate('src/templates/sample.md')
     } as const,
     data: {
         rootPath: locate('~/.ifmd'),

@@ -56,7 +56,7 @@ export default function () {
 
         return {
             name: name,
-            path: directory,
+            path: locate(directory),
             createdAt: new Date(createdAtStr),
             isNative
         };

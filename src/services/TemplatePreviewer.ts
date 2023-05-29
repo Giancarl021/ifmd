@@ -2,14 +2,23 @@ import TempManager from './TempManager';
 import constants from '../util/constants';
 import WebServer from './WebServer';
 import TemplateData from '../interfaces/TemplateData';
+import TemplateEngine from './TemplateEngine';
+import ParseMarkdown from './ParseMarkdown';
+import { readFileSync } from 'fs';
 
 export default function (
     template: TemplateData,
-    port: number = constants.webServer.defaultPort
+    baseFilePath: string,
+    port: number = constants.webServer.defaultPort,
+    extraProps: Record<string, string> = {}
 ) {
+    const parser = ParseMarkdown();
+    const engine = TemplateEngine();
     const temp = TempManager();
 
     const webServer = WebServer(port, temp.getRootPath(), true);
+
+    const baseFile = readFileSync(baseFilePath, 'utf8');
 
     async function sigIntHandler() {
         console.log('Closing web server...');
@@ -20,7 +29,22 @@ export default function (
         await temp.remove();
     }
 
-    async function preview(html: string) {
+    async function getHtml() {
+        const { title, content } = parser.convert(baseFile);
+        const html = await engine.generateForPreview(
+            template,
+            {
+                title,
+                content,
+                ...extraProps
+            },
+            port
+        );
+        return html;
+    }
+
+    async function preview() {
+        const html = await getHtml();
         await temp.create();
         await temp.fill(html, template.path);
 
@@ -34,8 +58,10 @@ export default function (
         });
     }
 
-    async function update(html: string) {
-        await temp.write('index.html', html);
+    async function update() {
+        await temp.clear();
+        await temp.fill(await getHtml(), template.path);
+
         webServer.reloadPage();
     }
 
