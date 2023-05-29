@@ -19,9 +19,10 @@ const command: Command = async function (args) {
     const generateManifest = this.helpers.hasFlag('g', 'generate-manifest');
 
     const manifestPath = locate(`${path}/manifest.json`);
+    const manifestExists = exists(manifestPath);
 
     if (generateManifest) {
-        if (exists(manifestPath))
+        if (manifestExists)
             throw new Error(`Manifest already exists at ${manifestPath}`);
 
         const files = await recursiveReadDir(path, path =>
@@ -34,6 +35,11 @@ const command: Command = async function (args) {
 
         return `Manifest generated at ${manifestPath}`;
     }
+
+    if (!manifestExists)
+        throw new Error(
+            `Manifest does not exist at ${path}.\nRun with this command with the \`--generate-manifest\` flag to generate one`
+        );
 
     const manifestData = JSON.parse(await readFile(manifestPath, 'utf-8'));
 
