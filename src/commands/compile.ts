@@ -1,10 +1,13 @@
 import { Command } from '@giancarl021/cli-core/interfaces';
 import constants from '../util/constants';
 import locate from '@giancarl021/locate';
+import ignore, { Ignore } from 'ignore';
+import { relative } from 'path';
 import { readFile, lstat, writeFile } from 'fs/promises';
 import { existsSync as exists } from 'fs';
 import recursiveReadDir from '../util/recursiveReadDir';
 import CompilationData from '../interfaces/CompilationData';
+import Nullable from '../interfaces/Nullable';
 
 const command: Command = async function (args) {
     const [directory] = args;
@@ -17,23 +20,60 @@ const command: Command = async function (args) {
         throw new Error(`${directory} is not a directory`);
 
     const generateManifest = this.helpers.hasFlag('g', 'generate-manifest');
+    const ignoreFilePath: Nullable<string> = this.helpers.valueOrDefault(
+        this.helpers.getFlag('i', 'ignore-file'),
+        null
+    );
 
     const manifestPath = locate(`${path}/manifest.json`);
     const manifestExists = exists(manifestPath);
 
     if (generateManifest) {
-        if (manifestExists)
-            throw new Error(`Manifest already exists at ${manifestPath}`);
+        const _ignoreFilePath = ignoreFilePath ? locate(ignoreFilePath) : null;
 
-        const files = await recursiveReadDir(path, path =>
-            path.endsWith('.md')
-        );
+        if (
+            ignoreFilePath &&
+            (!exists(_ignoreFilePath!) ||
+                !(await lstat(_ignoreFilePath!)).isFile())
+        )
+            throw new Error(`Ignore file does not exist at ${_ignoreFilePath}`);
 
-        const manifest = constants.compilation.getDefaultManifest(path, files);
+        let ig: Ignore | null = null;
+
+        if (ignoreFilePath) {
+            ig = ignore();
+            ig.add(await readFile(_ignoreFilePath!, 'utf-8'));
+        }
+
+        const files = await recursiveReadDir(path, filePath => {
+            if (!filePath.endsWith('.md')) return false;
+
+            if (ig) return !ig.ignores(relative(path, filePath));
+
+            return true;
+        });
+
+        if (manifestExists) {
+        }
+
+        const manifest: CompilationData = manifestExists
+            ? {
+                  ...JSON.parse(await readFile(manifestPath, 'utf-8')),
+                  files
+              }
+            : constants.compilation.getDefaultManifest(path, files);
 
         await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 
-        return `Manifest generated at ${manifestPath}`;
+        return `Manifest ${
+            manifestExists ? 'updated' : 'generated'
+        } at ${manifestPath}`;
+    }
+
+    if (ignoreFilePath) {
+        console.log(
+            'WARNING: Ignoring files can only be applied on a manifest generation'
+        );
     }
 
     if (!manifestExists)

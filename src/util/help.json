@@ -78,8 +78,14 @@
         "flags": {
             "g": {
                 "aliases": ["generate-manifest"],
-                "description": "Generate a manifest file for later compilation, usually for first runs",
+                "description": "Generate or update a manifest file for later compilation",
                 "optional": true
+            },
+            "i": {
+                "aliases": ["ignore"],
+                "description": "Path to a .ignore file, like .gitignore, to filter out unwanted markdown files",
+                "optional": true,
+                "values": ["<path/to/file>"]
             }
         }
     },

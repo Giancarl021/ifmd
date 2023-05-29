@@ -42,6 +42,7 @@
         "chokidar": "^3.5.3",
         "dompurify": "^3.0.1",
         "escape-html": "^1.0.3",
+        "ignore": "^5.2.4",
         "jsdom": "^21.1.0",
         "marked": "^4.2.12",
         "marked-katex-extension": "^2.1.0",
