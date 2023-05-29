@@ -43,6 +43,7 @@
         "escape-html": "^1.0.3",
         "jsdom": "^21.1.0",
         "marked": "^4.2.12",
+        "marked-katex-extension": "^2.1.0",
         "mermaid": "^10.1.0",
         "puppeteer": "^19.7.5",
         "recursive-copy": "^2.0.14",
