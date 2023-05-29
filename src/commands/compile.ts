@@ -16,7 +16,7 @@ const command: Command = async function (args) {
     if (!exists(path) || !(await lstat(path)).isDirectory())
         throw new Error(`${directory} is not a directory`);
 
-    const generateManifest = this.helpers.hasFlag('m', 'generate-manifest');
+    const generateManifest = this.helpers.hasFlag('g', 'generate-manifest');
 
     const manifestPath = locate(`${path}/manifest.json`);
 

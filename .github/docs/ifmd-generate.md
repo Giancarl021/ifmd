@@ -1,6 +1,6 @@
 # generate
 
-Generate a PDF file from a Markdown file on the same directory
+Generate a PDF file from a Markdown file
 
 ## Usage
 

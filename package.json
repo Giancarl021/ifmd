@@ -30,6 +30,7 @@
     "pre-commit": [
         "format",
         "build",
+        "docs",
         "git-add"
     ],
     "dependencies": {

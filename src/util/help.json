@@ -1,7 +1,7 @@
 {
     "$schema": "https://gist.githubusercontent.com/Giancarl021/127020c9cecb032beff587e308bec4ca/raw/af14cd087c7f3f2f1b1d6a6daec6f82699a44973/@giancarl021__cli-core__help-descriptor.schema.json",
     "generate": {
-        "description": "Generate a PDF file from a Markdown file on the same directory",
+        "description": "Generate a PDF file from a Markdown file",
         "args": ["path/to/file"],
         "flags": {
             "m": {
@@ -69,6 +69,17 @@
                 "description": "The template to be used for the PDF. Defaults to `Document`",
                 "optional": true,
                 "values": ["<template-name>"]
+            }
+        }
+    },
+    "compile": {
+        "description": "Compile multiple Markdown files into a single PDF file",
+        "args": ["path/to/directory"],
+        "flags": {
+            "g": {
+                "aliases": ["generate-manifest"],
+                "description": "Generate a manifest file for later compilation, usually for first runs",
+                "optional": true
             }
         }
     },
