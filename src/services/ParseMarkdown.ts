@@ -8,7 +8,11 @@ import constants from '../util/constants';
 const window = new JSDOM('').window as unknown as Window;
 const purify = DOMPurify(window);
 
-marked.use(markedKatex());
+marked.use(
+    markedKatex({
+        throwOnError: false
+    })
+);
 
 export default function () {
     function parse(markdown: string) {
