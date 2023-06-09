@@ -1,6 +1,6 @@
 {
     "name": "@giancarl021/ifmd",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Simple Markdown-to-pdf renderer for my college assignments",
     "main": "lib/index.js",
     "repository": "https://github.com/Giancarl021/ifmd.git",
