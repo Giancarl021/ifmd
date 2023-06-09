@@ -10,7 +10,8 @@ const purify = DOMPurify(window);
 
 marked.use(
     markedKatex({
-        throwOnError: false
+        throwOnError: false,
+        output: 'mathml'
     })
 );
 
