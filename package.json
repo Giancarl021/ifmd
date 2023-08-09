@@ -1,7 +1,7 @@
 {
     "name": "@giancarl021/ifmd",
-    "version": "0.1.5",
-    "description": "Simple Markdown-to-pdf renderer for my college assignments",
+    "version": "0.1.6",
+    "description": "Markdown to PDF engine, allowing custom templates with the knowledge of web tecnologies",
     "main": "lib/index.js",
     "repository": "https://github.com/Giancarl021/ifmd.git",
     "author": "Giancarlo Fontela da Luz <gian.f.luz@hotmail.com>",
