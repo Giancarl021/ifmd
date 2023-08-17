@@ -23,6 +23,16 @@ const socketScript = `
         console.log('Reloading...');
         location.reload();
     }
+    
+    function done() {
+        console.log('Communicating Print-ready state...')
+        socket.emit('done');
+    }
+
+    window.Engine = {
+        done,
+        reload
+    };
 </script>
 `;
 

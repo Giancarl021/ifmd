@@ -8,12 +8,19 @@ const defaultManifest: Omit<CompilationData, 'files' | 'path' | 'createdAt'> = {
 };
 
 export default {
+    cli: {
+        appName: 'ifmd',
+        appDescription:
+            '[I]nherently [F]ascinating [M]ark[D]own, a Markdown to PDF converter with great customization capabilities',
+        debugMode: String(process.env.IFMD_DEBUG).toLowerCase() === 'true'
+    },
     templates: {
         customRootPath: locate('~/.ifmd/templates'),
         defaultRootPath: locate('src/templates'),
         defaultTemplateName: 'Document',
-        defaultSampleTemplateFile: locate('src/templates/sample.md')
-    } as const,
+        defaultSampleTemplateFile: locate('src/templates/sample.md'),
+        injectedModulesRelativePath: '__injected_modules__'
+    },
     compilation: {
         getDefaultManifest(root: string, files: string[]) {
             const manifest: CompilationData = {
@@ -25,21 +32,21 @@ export default {
 
             return manifest;
         }
-    } as const,
+    },
     data: {
         rootPath: locate('~/.ifmd'),
         varKeyRegex: /^[0-9a-zA-z-_]+$/,
         propsKey: 'props'
-    } as const,
+    },
     temp: {
         rootPath: locate('tmp')
-    } as const,
+    },
     frontEndLibs: {
         mermaid: locate('node_modules/mermaid')
-    } as const,
+    },
     webServer: {
         defaultPort: 3000
-    } as const,
+    },
     pdf: {
         defaultTitle: 'Trabalho',
         margins: {
@@ -49,7 +56,7 @@ export default {
                 bottom: '20px',
                 left: '20px',
                 right: '20px'
-            } as const
-        } as const
-    } as const
-};
+            }
+        }
+    }
+} as const;

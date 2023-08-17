@@ -12,7 +12,7 @@
         "!lib/tmp/"
     ],
     "bin": {
-        "ifmd": "lib/index.js"
+        "ifmd": "lib/bin.js"
     },
     "scripts": {
         "dev": "IFMD_DEBUG=true ts-node index.ts",
