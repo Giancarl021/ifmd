@@ -31,14 +31,15 @@ export default function (
 
     async function getHtml() {
         const { title, content } = parser.convert(baseFile);
-        const html = await engine.generateForPreview(
+        const html = await engine.generate(
             template,
             {
                 title,
                 content,
                 ...extraProps
             },
-            port
+            port,
+            ['mermaid']
         );
         return html;
     }

@@ -81,7 +81,8 @@ const command: Command = async function (args) {
             date,
             content
         },
-        port
+        port,
+        ['mermaid']
     );
 
     const pdf = await generator.generate(html);

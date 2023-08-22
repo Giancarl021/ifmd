@@ -67,7 +67,7 @@ const command: Command = async function (args) {
 
         const { title, content } = parser.convert(rawContent);
 
-        const html = await engine.generateForPreview(
+        const html = await engine.generate(
             templateData,
             {
                 ...props,
@@ -75,7 +75,8 @@ const command: Command = async function (args) {
                 date,
                 content
             },
-            port
+            port,
+            ['mermaid']
         );
 
         return html;

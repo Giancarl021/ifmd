@@ -1,4 +1,5 @@
 import locate from '@giancarl021/locate';
+import { CheerioAPI } from 'cheerio';
 import CompilationData from '../interfaces/CompilationData';
 
 const defaultManifest: Omit<CompilationData, 'files' | 'path' | 'createdAt'> = {
@@ -43,6 +44,27 @@ export default {
     },
     frontEndLibs: {
         mermaid: locate('node_modules/mermaid')
+    },
+    injectableModules: {
+        mermaid: {
+            root: locate('node_modules/mermaid'),
+            path: 'dist/mermaid.esm.min.mjs',
+            isESModule: true,
+            transformer($: CheerioAPI) {
+                $('code.language-mermaid').each(function () {
+                    const $el = $(this);
+
+                    const content = $el.text();
+
+                    const $parent = $el.parent();
+
+                    $el.remove('code');
+
+                    $parent.addClass('mermaid');
+                    $parent.text(content);
+                });
+            }
+        }
     },
     webServer: {
         defaultPort: 3000

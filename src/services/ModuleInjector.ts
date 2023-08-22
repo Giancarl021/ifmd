@@ -1,40 +1,37 @@
 import constants from '../util/constants';
-
-type AvailableModules = keyof (typeof constants)['frontEndLibs'];
+import TemplateFeature from '../interfaces/TemplateFeature';
+import { CheerioAPI } from 'cheerio';
 
 interface Options {
     serverPort: number;
-    modules: AvailableModules[];
+    $: CheerioAPI;
 }
 
-export default function ModuleInjector({ serverPort }: Options) {
+export default function ModuleInjector(options: Options) {
     const requiredModules = [
         _remoteInjector(
-            `http://localhost:${serverPort}/socket.io/socket.io.js`,
+            `http://localhost:${options.serverPort}/socket.io/socket.io.js`,
             false
         ),
         _directInjector(
             `
             const socket = io();
 
+            window.Engine = {
+                socket,
+                reload() {
+                    console.log('Reloading...');
+                    location.reload();
+                },
+                done() {
+                    console.log('Communicating print-ready state...');
+                    socket.emit('done');
+                }
+            };
+
             socket.on('reconnect', reload);
             socket.on('reload', reload);
-
-            function reload() {
-                console.log('Reloading...');
-                location.reload();
-            }
-    
-            function done() {
-                console.log('Communicating Print-ready state...')
-                socket.emit('done');
-            }
-
-            window.Engine = {
-                done,
-                reload
-            };
-        `,
+            `,
             false
         )
     ];
@@ -53,7 +50,7 @@ export default function ModuleInjector({ serverPort }: Options) {
         pathToModule: string,
         isESModule: boolean
     ): string {
-        return `<script src="http://localhost:${serverPort}/${
+        return `<script src="http://localhost:${options.serverPort}/${
             constants.templates.injectedModulesRelativePath
         }/${pathToModule}" type="${_scriptType(isESModule)}"></script>`;
     }
@@ -62,11 +59,23 @@ export default function ModuleInjector({ serverPort }: Options) {
         return `<script type="${_scriptType(isESModule)}">${script}</script>`;
     }
 
-    function getHeadElements() {
-        return requiredModules.join('\n');
+    function injectModules(features: TemplateFeature[]) {
+        const modules = requiredModules.concat(
+            features.map(key => {
+                const module = constants.injectableModules[key];
+
+                if (module.transformer) {
+                    module.transformer(options.$);
+                }
+
+                return _nodeModuleInjector(module.path, module.isESModule);
+            })
+        );
+
+        options.$('head').append(modules.join('\n'));
     }
 
     return {
-        getHeadElements
+        injectModules
     };
 }

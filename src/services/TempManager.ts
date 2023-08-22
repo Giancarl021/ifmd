@@ -30,7 +30,10 @@ export default function () {
                     lib as keyof typeof constants.frontEndLibs
                 ];
 
-            await copyFiles(path, `${tmpPath}/__injected_libs__/${lib}`);
+            await copyFiles(
+                path,
+                `${tmpPath}/${constants.templates.injectedModulesRelativePath}/${lib}`
+            );
         }
     }
 
