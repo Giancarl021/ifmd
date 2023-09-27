@@ -46,8 +46,6 @@ const command: Command = async function (args, flags) {
         new Date().toLocaleDateString()
     );
 
-    console.log(props);
-
     const watcher = chokidar.watch(path, {
         awaitWriteFinish: true
     });
