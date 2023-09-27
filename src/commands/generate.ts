@@ -49,7 +49,7 @@ const command: Command = async function (args) {
     const port =
         Number(
             this.helpers.valueOrDefault(
-                this.helpers.getFlag('p', 'port'),
+                this.helpers.getFlag('web-server-port'),
                 String(constants.webServer.defaultPort)
             )
         ) || constants.webServer.defaultPort;

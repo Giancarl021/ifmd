@@ -52,8 +52,13 @@
                 "optional": true,
                 "values": ["<path/to/file>"]
             },
-            "p": {
-                "aliases": ["port"],
+            "p:<prop-name>": {
+                "description": "Command-scoped props to be used in the document generation",
+                "aliases": ["prop:<prop-name>"],
+                "optional": true,
+                "values": ["<prop-value>"]
+            },
+            "web-server-port": {
                 "description": "The port for the web server to listen to. Defaults to `3000`",
                 "optional": true,
                 "values": ["<number>"]
@@ -64,8 +69,13 @@
         "description": "Create a web preview of the rendered document with live reload on changes",
         "args": ["path/to/file"],
         "flags": {
-            "p": {
-                "aliases": ["port"],
+            "p:<prop-name>": {
+                "description": "Command-scoped props to be used in the document generation",
+                "aliases": ["prop:<prop-name>"],
+                "optional": true,
+                "values": ["<prop-value>"]
+            },
+            "web-server-port": {
                 "description": "The port for the web server to listen to. Defaults to `3000`",
                 "optional": true,
                 "values": ["<number>"]
@@ -135,8 +145,13 @@
                 "optional": true,
                 "values": ["<path/to/file>"]
             },
-            "p": {
-                "aliases": ["port"],
+            "p:<prop-name>": {
+                "description": "Command-scoped props to be used in the document generation",
+                "aliases": ["prop:<prop-name>"],
+                "optional": true,
+                "values": ["<prop-value>"]
+            },
+            "web-server-port": {
                 "description": "The port for the web server to listen to. Defaults to `3000`",
                 "optional": true,
                 "values": ["<number>"]
@@ -189,8 +204,13 @@
                 "description": "Create a web preview of the specified template with a sample document and live reload on changes",
                 "args": ["template-name"],
                 "flags": {
-                    "p": {
-                        "aliases": ["port"],
+                    "p:<prop-name>": {
+                        "description": "Command-scoped props to be used in the document generation",
+                        "aliases": ["prop:<prop-name>"],
+                        "optional": true,
+                        "values": ["<prop-value>"]
+                    },
+                    "web-server-port": {
                         "description": "The port for the web server to listen to. Defaults to `3000`",
                         "optional": true,
                         "values": ["<number>"]

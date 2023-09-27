@@ -15,10 +15,10 @@
         "ifmd": "lib/bin.js"
     },
     "scripts": {
-        "dev": "IFMD_DEBUG=true ts-node index.ts",
+        "dev": "IFMD_DEBUG=true ts-node bin.ts",
         "format": "prettier -w --config .prettierrc --ignore-path .prettierignore .",
         "ci": "yarn install --frozen-lockfile",
-        "start": "node lib/index.js",
+        "start": "node lib/bin.js",
         "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o .github -f",
         "prepreview": "yarn build",
         "preview": "node lib/index.js",

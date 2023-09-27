@@ -37,7 +37,9 @@ export default {
     data: {
         rootPath: locate('~/.ifmd'),
         varKeyRegex: /^[0-9a-zA-z-_]+$/,
-        propsKey: 'props'
+        propsKey: 'props',
+        propFlagPrefixes: ['p', 'prop'] as string[],
+        propsFlagSeparator: ':'
     },
     temp: {
         rootPath: locate('tmp')

@@ -18,5 +18,6 @@ ifmd generate <path/to/file> <flags>
 * `--mr` | `--margin-right`: Margin right of the rendered PDF. Overwrites the `--margin` flag. Values: `<value>` | `<value>px` | `<value>cm`;
 * `-t` | `--template`: The template to be used for the PDF. Defaults to `Document`. Value: `<template-name>`;
 * `-o` | `--out` | `--output`: The path to the output file. Defaults to the same as the input file but with the `.pdf` extension. Value: `<path/to/file>`;
-* `-p` | `--port`: The port for the web server to listen to. Defaults to `3000`. Value: `<number>`.
+* `--p:<prop-name>` | `--prop:<prop-name>`: Command-scoped props to be used in the document generation. Value: `<prop-value>`;
+* `--web-server-port`: The port for the web server to listen to. Defaults to `3000`. Value: `<number>`.
 

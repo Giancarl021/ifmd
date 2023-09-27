@@ -10,7 +10,7 @@ import vaultConfig from './src/util/vaultConfig';
 async function IFMD() {
     const behavior: Behavior = {};
 
-    const _help: HelpDescriptor = { ...help };
+    const _help = { ...help } as HelpDescriptor;
     delete _help['$schema'];
 
     if (constants.cli.debugMode) {
