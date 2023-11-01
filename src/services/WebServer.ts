@@ -1,8 +1,11 @@
 import { Server as ServerType, createServer } from 'http';
 import { Server } from 'socket.io';
 import serveHandler from 'serve-handler';
+import { parse } from 'url';
 import { Socket } from 'net';
 import Nullable from '../interfaces/Nullable';
+import LocalAsset from '../interfaces/LocalAsset';
+import { createReadStream, existsSync } from 'fs';
 
 type ServeHandlerOptions = Parameters<typeof serveHandler>[2];
 
@@ -10,6 +13,7 @@ interface Context {
     server: ServerType;
     socketServer: InstanceType<typeof Server>;
     connections: Set<Socket>;
+    assetTable: Record<string, LocalAsset>;
 }
 
 export default function (
@@ -17,10 +21,12 @@ export default function (
     rootPath: string,
     useSockets: boolean
 ) {
-    const context: Nullable<Context> = {
+    const context: Nullable<Omit<Context, 'assetTable'>> &
+        Pick<Context, 'assetTable'> = {
         server: null,
         socketServer: null,
-        connections: new Set()
+        connections: new Set(),
+        assetTable: {}
     };
 
     const serveHandlerOptions: ServeHandlerOptions = {
@@ -29,14 +35,44 @@ export default function (
         directoryListing: false
     };
 
-    function reloadPage() {
+    function reloadPage(localAssets: LocalAsset[]) {
+        context.assetTable = localAssets.reduce((table, item) => {
+            table[item.reference] = item;
+            return table;
+        }, {} as Record<string, LocalAsset>);
+
         if (context.socketServer) context.socketServer.emit('reload');
     }
 
-    async function start() {
-        context.server = createServer((req, res) =>
-            serveHandler(req, res, serveHandlerOptions)
-        );
+    async function start(localAssets: LocalAsset[]) {
+        context.assetTable = localAssets.reduce((table, item) => {
+            table[item.reference] = item;
+            return table;
+        }, {} as Record<string, LocalAsset>);
+
+        context.server = createServer((req, res) => {
+            if (req.url) {
+                const baseUrl = parse(req.url);
+                if (baseUrl.pathname?.startsWith('/__dynamic_assets__')) {
+                    const reference = String(baseUrl.pathname.split('/').pop());
+
+                    const asset = context.assetTable[reference];
+
+                    if (asset) {
+                        if (!existsSync(asset.path)) {
+                            res.writeHead(404);
+                            res.end();
+                            return;
+                        }
+
+                        createReadStream(asset.path).pipe(res);
+                        return;
+                    }
+                }
+            }
+
+            serveHandler(req, res, serveHandlerOptions);
+        });
 
         if (useSockets) {
             context.socketServer = new Server(context.server);

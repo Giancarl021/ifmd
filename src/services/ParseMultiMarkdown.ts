@@ -10,7 +10,10 @@ export default function () {
             manifest.files.map(async filePath => {
                 const markdown = await readFile(filePath, 'utf-8');
 
-                return parser.convertWithMetadata(markdown);
+                return {
+                    ...parser.convertWithMetadata(markdown, filePath),
+                    filePath
+                };
             })
         );
 
@@ -18,7 +21,9 @@ export default function () {
             (acc, current) => `
                 ${acc}
                 <div class="page-break"></div>
-                ${current.content}
+                <div class="file-content">
+                    ${current.content}
+                </div>
             `,
             ''
         );
@@ -44,7 +49,8 @@ export default function () {
             content: `<h1>${manifest.title}</h1>${
                 manifest.description ? `<p>${manifest.description}</p>` : ''
             }${content}`,
-            title: manifest.title
+            title: manifest.title,
+            localAssets: parsedFiles.flatMap(file => file.localAssets)
         };
     }
 

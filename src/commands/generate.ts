@@ -71,7 +71,7 @@ const command: Command = async function (args) {
         new Date().toLocaleDateString()
     );
 
-    const { title, content } = parser.convert(rawContent);
+    const { title, content, localAssets } = parser.convert(rawContent, path);
 
     const html = await engine.generate(
         templateData,
@@ -81,10 +81,11 @@ const command: Command = async function (args) {
             date,
             content
         },
+        localAssets,
         port
     );
 
-    const pdf = await generator.generate(html);
+    const pdf = await generator.generate(html, localAssets);
 
     const outPath = locate(
         this.helpers.valueOrDefault(

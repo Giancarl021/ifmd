@@ -152,7 +152,7 @@ const command: Command = async function (args) {
         createdAt: new Date(manifestData.createdAt)
     };
 
-    const { title, content } = await parser.compile(manifest);
+    const { title, content, localAssets } = await parser.compile(manifest);
 
     const html = await engine.generate(
         templateData,
@@ -162,10 +162,11 @@ const command: Command = async function (args) {
             date,
             content
         },
+        localAssets,
         port
     );
 
-    const pdf = await generator.generate(html);
+    const pdf = await generator.generate(html, localAssets);
 
     await writeFile(outPath, pdf);
 

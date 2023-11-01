@@ -1,9 +1,10 @@
-import { load } from 'cheerio';
+import { CheerioAPI, load } from 'cheerio';
 import constants from '../util/constants';
 import { readFile } from 'fs/promises';
 import locate from '@giancarl021/locate';
 import TemplateData from '../interfaces/TemplateData';
 import parseDate from '../util/parseDate';
+import LocalAsset from '../interfaces/LocalAsset';
 
 type Variables = Record<string, string> & {
     content: string;
@@ -29,6 +30,7 @@ const socketScript = `
 export default function () {
     async function _generate(
         template: TemplateData,
+        localAssets: LocalAsset[],
         variables: Variables,
         serverPort: number,
         isPreview: boolean = false
@@ -40,7 +42,7 @@ export default function () {
 
         const html = replaceVariables(baseHtml, variables);
 
-        const $ = load(html);
+        const $ = replaceAssets(html, localAssets, serverPort);
 
         $('head').append(
             `<script type="module" src="http://localhost:${serverPort}/__injected_libs__/mermaid/dist/mermaid.esm.min.mjs"></script>`
@@ -73,17 +75,60 @@ export default function () {
     async function generate(
         template: TemplateData,
         variables: Variables,
+        localAssets: LocalAsset[],
         serverPort: number
     ) {
-        return await _generate(template, variables, serverPort, false);
+        return await _generate(
+            template,
+            localAssets,
+            variables,
+            serverPort,
+            false
+        );
     }
 
     async function generateForPreview(
         template: TemplateData,
         variables: Variables,
+        localAssets: LocalAsset[],
         previewPort: number = constants.webServer.defaultPort
     ) {
-        return await _generate(template, variables, previewPort, true);
+        return await _generate(
+            template,
+            localAssets,
+            variables,
+            previewPort,
+            true
+        );
+    }
+
+    function replaceAssets(
+        html: string,
+        localAssets: LocalAsset[],
+        serverPort: number
+    ): CheerioAPI {
+        if (!localAssets.length) return load(html);
+
+        const isSingleFile = localAssets
+            .slice(1)
+            .every(asset => asset.owner === localAssets[0].owner);
+
+        if (isSingleFile) {
+            let parsedHtml = html;
+
+            for (const asset of localAssets) {
+                parsedHtml = parsedHtml.replaceAll(
+                    asset.originalPath,
+                    `http://localhost:${serverPort}/__dynamic_assets__/${asset.reference}`
+                );
+            }
+
+            return load(parsedHtml);
+        }
+
+        const $ = load(html);
+
+        return $;
     }
 
     function replaceVariables(

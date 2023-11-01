@@ -46,7 +46,7 @@
         "jsdom": "^21.1.0",
         "marked": "^4.2.12",
         "marked-katex-extension": "^2.1.0",
-        "mermaid": "^10.1.0",
+        "mermaid": "^10.6.0",
         "puppeteer": "^19.7.5",
         "recursive-copy": "^2.0.14",
         "serve-handler": "^6.1.5",

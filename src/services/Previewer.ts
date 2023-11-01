@@ -2,6 +2,7 @@ import TempManager from './TempManager';
 import constants from '../util/constants';
 import WebServer from './WebServer';
 import TemplateData from '../interfaces/TemplateData';
+import LocalAsset from '../interfaces/LocalAsset';
 
 export default function (
     template: TemplateData,
@@ -20,11 +21,11 @@ export default function (
         await temp.remove();
     }
 
-    async function preview(html: string) {
+    async function preview(html: string, localAssets: LocalAsset[]) {
         await temp.create();
         await temp.fill(html, template.path);
 
-        await webServer.start();
+        await webServer.start(localAssets);
         console.log(`Preview available on http://localhost:${port}`);
 
         await new Promise(resolve => {
@@ -34,9 +35,9 @@ export default function (
         });
     }
 
-    async function update(html: string) {
+    async function update(html: string, localAssets: LocalAsset[]) {
         await temp.write('index.html', html);
-        webServer.reloadPage();
+        webServer.reloadPage(localAssets);
     }
 
     return {
