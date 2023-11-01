@@ -50,8 +50,6 @@ export default function () {
             .toArray()
             .filter(Boolean);
 
-        console.log(localAssets);
-
         return localAssets;
     }
 
