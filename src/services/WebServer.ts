@@ -53,9 +53,9 @@ export default function (
         context.server = createServer((req, res) => {
             if (req.url) {
                 const baseUrl = parse(req.url);
-                if (baseUrl.pathname?.startsWith('/__dynamic_assets__')) {
+                if (baseUrl.pathname?.startsWith('/__dynamic_assets__/')) {
                     const reference = baseUrl.pathname.replace(
-                        /^(.*)__dynamic_assets__/,
+                        /^(.*)__dynamic_assets__\//,
                         ''
                     );
 
