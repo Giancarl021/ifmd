@@ -1,9 +1,13 @@
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
-import { load } from 'cheerio';
+import { CheerioAPI, load } from 'cheerio';
 import markedKatex from 'marked-katex-extension';
+import { dirname } from 'path';
+import locate from '@giancarl021/locate';
 import constants from '../util/constants';
+import LocalAsset from '../interfaces/LocalAsset';
+import hash from '../util/hash';
 
 const window = new JSDOM('').window as unknown as Window;
 const purify = DOMPurify(window);
@@ -24,7 +28,32 @@ export default function () {
         return sanitized;
     }
 
-    function convert(markdown: string) {
+    function getLocalAssets($: CheerioAPI, pathOfOrigin: string) {
+        const localAssets = $('[src], [href]')
+            .map((index, element) => {
+                const $element = $(element);
+                const asset = String(
+                    $element.attr('src') ?? $element.attr('href')
+                );
+
+                if (!asset || asset.startsWith('http')) return null;
+
+                const localAsset: LocalAsset = {
+                    originalPath: asset,
+                    path: locate(`${dirname(pathOfOrigin)}/${asset}`),
+                    reference: hash(`${pathOfOrigin}::${index}`),
+                    owner: pathOfOrigin
+                };
+
+                return localAsset;
+            })
+            .toArray()
+            .filter(Boolean);
+
+        return localAssets;
+    }
+
+    function convert(markdown: string, pathOfOrigin: string) {
         const html = parse(markdown);
 
         const $ = load(html);
@@ -37,11 +66,16 @@ export default function () {
 
         return {
             title,
-            content: $.html()
+            content: $.html(),
+            localAssets: getLocalAssets($, pathOfOrigin)
         };
     }
 
-    function convertWithMetadata(markdown: string, index: number = 0) {
+    function convertWithMetadata(
+        markdown: string,
+        pathOfOrigin: string,
+        index: number = 0
+    ) {
         const html = parse(markdown);
 
         const $ = load(html);
@@ -55,7 +89,8 @@ export default function () {
         return {
             title,
             titleId,
-            content: $.html()
+            content: $.html(),
+            localAssets: getLocalAssets($, pathOfOrigin)
         };
     }
 

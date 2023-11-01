@@ -2,6 +2,7 @@ import puppeteer, { PDFMargin } from 'puppeteer';
 import TempManager from './TempManager';
 import WebServer from './WebServer';
 import constants from '../util/constants';
+import LocalAsset from '../interfaces/LocalAsset';
 
 export default function (
     templatePath: string,
@@ -41,11 +42,11 @@ export default function (
         return pdf;
     }
 
-    async function generate(html: string) {
+    async function generate(html: string, localAssets: LocalAsset[]) {
         await temp.create();
         await temp.fill(html, templatePath);
 
-        await webServer.start();
+        await webServer.start(localAssets);
 
         const indexPath = `http://localhost:${serverPort}/index.html`;
 

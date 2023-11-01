@@ -53,19 +53,22 @@ const command: Command = async function (args) {
     watcher.on('change', async () => {
         console.log('Changes detected, reloading preview...');
 
-        const html = await generateHtml();
+        const data = await generateData();
 
-        await previewer.update(html);
+        await previewer.update(data.html, data.localAssets);
     });
 
-    const initialHtml = await generateHtml();
+    const initialData = await generateData();
 
-    await previewer.preview(initialHtml);
+    await previewer.preview(initialData.html, initialData.localAssets);
 
-    async function generateHtml() {
+    async function generateData() {
         const rawContent = await readFile(path, 'utf8');
 
-        const { title, content } = parser.convert(rawContent);
+        const { title, content, localAssets } = parser.convert(
+            rawContent,
+            path
+        );
 
         const html = await engine.generateForPreview(
             templateData,
@@ -75,10 +78,11 @@ const command: Command = async function (args) {
                 date,
                 content
             },
+            localAssets,
             port
         );
 
-        return html;
+        return { html, localAssets };
     }
 
     await watcher.close();

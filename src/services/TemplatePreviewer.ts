@@ -5,6 +5,7 @@ import TemplateData from '../interfaces/TemplateData';
 import TemplateEngine from './TemplateEngine';
 import ParseMarkdown from './ParseMarkdown';
 import { readFileSync } from 'fs';
+import LocalAsset from '../interfaces/LocalAsset';
 
 export default function (
     template: TemplateData,
@@ -29,8 +30,11 @@ export default function (
         await temp.remove();
     }
 
-    async function getHtml() {
-        const { title, content } = parser.convert(baseFile);
+    async function getData() {
+        const { title, content, localAssets } = parser.convert(
+            baseFile,
+            baseFilePath
+        );
         const html = await engine.generateForPreview(
             template,
             {
@@ -38,17 +42,18 @@ export default function (
                 content,
                 ...extraProps
             },
+            localAssets,
             port
         );
-        return html;
+        return { html, localAssets };
     }
 
     async function preview() {
-        const html = await getHtml();
+        const { html, localAssets } = await getData();
         await temp.create();
         await temp.fill(html, template.path);
 
-        await webServer.start();
+        await webServer.start(localAssets);
         console.log(`Preview available on http://localhost:${port}`);
 
         await new Promise(resolve => {
@@ -59,10 +64,11 @@ export default function (
     }
 
     async function update() {
+        const data = await getData();
         await temp.clear();
-        await temp.fill(await getHtml(), template.path);
+        await temp.fill(data.html, template.path);
 
-        webServer.reloadPage();
+        webServer.reloadPage(data.localAssets);
     }
 
     return {

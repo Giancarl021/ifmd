@@ -11,7 +11,7 @@ async function copyTemplates() {
     const srcPath = locate('src/templates');
     const distPath = locate('lib/src/templates');
 
-    if (!exists(distPath)) mkdir(distPath, { recursive: true });
+    if (!exists(distPath)) await mkdir(distPath, { recursive: true });
 
     await copy(srcPath, distPath, { overwrite: true });
 }
@@ -24,7 +24,8 @@ async function injectModules() {
     }));
 
     const promises = paths.map(async path => {
-        if (!exists(path)) mkdir(path.distPath, { recursive: true });
+        if (!exists(path.distPath))
+            await mkdir(path.distPath, { recursive: true });
 
         await copy(path.srcPath, path.distPath, { overwrite: true });
     });
