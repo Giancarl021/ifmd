@@ -54,7 +54,10 @@ export default function (
             if (req.url) {
                 const baseUrl = parse(req.url);
                 if (baseUrl.pathname?.startsWith('/__dynamic_assets__')) {
-                    const reference = String(baseUrl.pathname.split('/').pop());
+                    const reference = baseUrl.pathname.replace(
+                        /^(.*)__dynamic_assets__/,
+                        ''
+                    );
 
                     const asset = context.assetTable[reference];
 
