@@ -1,6 +1,6 @@
 {
     "name": "@giancarl021/ifmd",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "description": "Markdown to PDF engine, allowing custom templates with the knowledge of web tecnologies",
     "main": "lib/index.js",
     "repository": "https://github.com/Giancarl021/ifmd.git",
@@ -46,7 +46,7 @@
         "jsdom": "^21.1.0",
         "marked": "^4.2.12",
         "marked-katex-extension": "^2.1.0",
-        "mermaid": "^10.6.0",
+        "mermaid": "^10.6.1",
         "puppeteer": "^19.7.5",
         "recursive-copy": "^2.0.14",
         "serve-handler": "^6.1.5",
