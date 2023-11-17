@@ -3,10 +3,8 @@ import chokidar from 'chokidar';
 import TemplateManager from '../services/TemplateManager';
 import open from '../util/open';
 import constants from '../util/constants';
-import ParseMarkdown from '../services/ParseMarkdown';
-import TemplateEngine from '../services/TemplateEngine';
 import TemplatePreviewer from '../services/TemplatePreviewer';
-import { readFile } from 'fs/promises';
+import getProps from '../util/getProps';
 
 async function getAllTemplates() {
     const templateManager = TemplateManager();
@@ -110,7 +108,7 @@ const commands: Commands = {
         return `Template ${template.name} at ${template.path} opened in your default file explorer`;
     },
 
-    async preview(args) {
+    async preview(args, flags) {
         const [templateName] = args;
 
         if (!templateName) throw new Error('Template name is required');
@@ -127,7 +125,7 @@ const commands: Commands = {
         const port =
             Number(
                 this.helpers.valueOrDefault(
-                    this.helpers.getFlag('p', 'port'),
+                    this.helpers.getFlag('web-server-port'),
                     String(constants.webServer.defaultPort)
                 )
             ) || constants.webServer.defaultPort;
@@ -137,8 +135,7 @@ const commands: Commands = {
             constants.templates.defaultSampleTemplateFile
         );
 
-        const props: Record<string, string> =
-            this.extensions.vault.getData(constants.data.propsKey) || {};
+        const props: Record<string, string> = getProps(this, flags);
         const date: string = this.helpers.valueOrDefault(
             this.helpers.getFlag('d', 'date'),
             new Date().toLocaleDateString()

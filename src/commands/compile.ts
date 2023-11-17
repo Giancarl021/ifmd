@@ -12,8 +12,9 @@ import PdfGenerator from '../services/PdfGenerator';
 import TemplateManager from '../services/TemplateManager';
 import ParseMultiMarkdown from '../services/ParseMultiMarkdown';
 import TemplateEngine from '../services/TemplateEngine';
+import getProps from '../util/getProps';
 
-const command: Command = async function (args) {
+const command: Command = async function (args, flags) {
     const [directory] = args;
 
     if (!directory) throw new Error('Directory is required');
@@ -35,7 +36,7 @@ const command: Command = async function (args) {
     const port =
         Number(
             this.helpers.valueOrDefault(
-                this.helpers.getFlag('p', 'port'),
+                this.helpers.getFlag('web-server-port'),
                 String(constants.webServer.defaultPort)
             )
         ) || constants.webServer.defaultPort;
@@ -64,8 +65,7 @@ const command: Command = async function (args) {
         )
     };
 
-    const props: Record<string, string> =
-        this.extensions.vault.getData(constants.data.propsKey) || {};
+    const props: Record<string, string> = getProps(this, flags);
     const date: string = this.helpers.valueOrDefault(
         this.helpers.getFlag('date', 'd'),
         new Date().toLocaleDateString()

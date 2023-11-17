@@ -7,9 +7,10 @@ import ParseMarkdown from '../services/ParseMarkdown';
 import TemplateEngine from '../services/TemplateEngine';
 import Previewer from '../services/Previewer';
 import constants from '../util/constants';
+import getProps from '../util/getProps';
 import TemplateManager from '../services/TemplateManager';
 
-const command: Command = async function (args) {
+const command: Command = async function (args, flags) {
     const [file] = args;
 
     if (!file) throw new Error('No file specified');
@@ -19,7 +20,7 @@ const command: Command = async function (args) {
     const port =
         Number(
             this.helpers.valueOrDefault(
-                this.helpers.getFlag('p', 'port'),
+                this.helpers.getFlag('web-server-port'),
                 String(constants.webServer.defaultPort)
             )
         ) || constants.webServer.defaultPort;
@@ -39,8 +40,7 @@ const command: Command = async function (args) {
     const engine = TemplateEngine();
     const previewer = Previewer(templateData, port);
 
-    const props: Record<string, string> =
-        this.extensions.vault.getData(constants.data.propsKey) || {};
+    const props: Record<string, string> = getProps(this, flags);
     const date: string = this.helpers.valueOrDefault(
         this.helpers.getFlag('date', 'd'),
         new Date().toLocaleDateString()
