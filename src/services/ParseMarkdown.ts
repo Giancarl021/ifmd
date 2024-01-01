@@ -36,7 +36,8 @@ export default function () {
                     $element.attr('src') ?? $element.attr('href')
                 );
 
-                if (!asset || asset.startsWith('http')) return null;
+                if (!asset || asset.startsWith('http') || asset.startsWith('#'))
+                    return null;
 
                 const localAsset: LocalAsset = {
                     originalPath: asset,
