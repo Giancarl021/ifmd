@@ -19,7 +19,7 @@ const command: Command = async function (args, flags) {
 
     if (!directory) throw new Error('Directory is required');
 
-    const path = locate(directory);
+    const path = locate(directory, true);
 
     if (!exists(path) || !(await lstat(path)).isDirectory())
         throw new Error(`${directory} is not a directory`);
