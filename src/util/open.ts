@@ -13,7 +13,7 @@ type OpenCommandMapKey = keyof OpenCommandMap;
 
 const currentOS = platform();
 
-export default function (path: string) {
+export default function open(path: string) {
     const command: string =
         openCommandMap[currentOS as OpenCommandMapKey] ??
         openCommandMap.default;

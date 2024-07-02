@@ -156,7 +156,7 @@ export default function () {
                 switch (key) {
                     case 'content':
                         result = replaceVariables(
-                            variables.content,
+                            variables.content ?? '',
                             variables,
                             level + 1
                         );

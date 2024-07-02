@@ -2,7 +2,7 @@ import ParseMarkdown from './ParseMarkdown';
 import CompilationData from '../interfaces/CompilationData';
 import { readFile } from 'fs/promises';
 
-export default function () {
+export default function ParseMultiMarkdown() {
     const parser = ParseMarkdown();
 
     async function compile(manifest: CompilationData) {

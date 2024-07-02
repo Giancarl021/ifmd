@@ -36,19 +36,25 @@ export default function (
     };
 
     function reloadPage(localAssets: LocalAsset[]) {
-        context.assetTable = localAssets.reduce((table, item) => {
-            table[item.reference] = item;
-            return table;
-        }, {} as Record<string, LocalAsset>);
+        context.assetTable = localAssets.reduce(
+            (table, item) => {
+                table[item.reference] = item;
+                return table;
+            },
+            {} as Record<string, LocalAsset>
+        );
 
         if (context.socketServer) context.socketServer.emit('reload');
     }
 
     async function start(localAssets: LocalAsset[]) {
-        context.assetTable = localAssets.reduce((table, item) => {
-            table[item.reference] = item;
-            return table;
-        }, {} as Record<string, LocalAsset>);
+        context.assetTable = localAssets.reduce(
+            (table, item) => {
+                table[item.reference] = item;
+                return table;
+            },
+            {} as Record<string, LocalAsset>
+        );
 
         context.server = createServer((req, res) => {
             if (req.url) {

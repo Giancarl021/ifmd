@@ -76,7 +76,7 @@ const command: Command = async function (args, flags) {
                 ...props,
                 title,
                 date,
-                content
+                content: content ?? ''
             },
             localAssets,
             port

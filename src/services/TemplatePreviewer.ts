@@ -1,13 +1,12 @@
 import TempManager from './TempManager';
 import constants from '../util/constants';
 import WebServer from './WebServer';
-import TemplateData from '../interfaces/TemplateData';
+import type TemplateData from '../interfaces/TemplateData';
 import TemplateEngine from './TemplateEngine';
 import ParseMarkdown from './ParseMarkdown';
 import { readFileSync } from 'fs';
-import LocalAsset from '../interfaces/LocalAsset';
 
-export default function (
+export default function TemplatePreviewer(
     template: TemplateData,
     baseFilePath: string,
     port: number = constants.webServer.defaultPort,
@@ -39,7 +38,7 @@ export default function (
             template,
             {
                 title,
-                content,
+                content: content ?? '',
                 ...extraProps
             },
             localAssets,

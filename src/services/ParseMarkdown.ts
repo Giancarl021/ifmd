@@ -19,9 +19,9 @@ marked.use(
     })
 );
 
-export default function () {
+export default function ParseMarkdown() {
     function parse(markdown: string) {
-        const html = marked(markdown);
+        const html = String(marked(markdown));
 
         const sanitized = purify.sanitize(html);
 
@@ -67,7 +67,7 @@ export default function () {
 
         return {
             title,
-            content: $.html(),
+            content: $('body').html(),
             localAssets: getLocalAssets($, pathOfOrigin)
         };
     }
@@ -90,7 +90,7 @@ export default function () {
         return {
             title,
             titleId,
-            content: $.html(),
+            content: $('body').html(),
             localAssets: getLocalAssets($, pathOfOrigin)
         };
     }
