@@ -1,17 +1,26 @@
-import { describe, test, expect, afterAll, beforeEach } from '@jest/globals';
-import locate from '@giancarl021/locate';
-import { mkdirSync, rmSync, existsSync } from 'fs';
+import {
+    jest,
+    describe,
+    test,
+    expect,
+    afterAll,
+    beforeEach
+} from '@jest/globals';
+
+jest.mock('fs');
+
+import { mkdirSync, existsSync, rmSync } from 'fs';
 
 import assertDir from '../../src/util/assertDir';
 
-const PATH = locate('../../tmp' + Math.floor(1e4 * Math.random()), true);
+const PATH = 'test-directory';
 
 const CREATE_PATH = () => mkdirSync(PATH, { recursive: true });
-const REMOVE_PATH = () => rmSync(PATH, { recursive: true });
 const PATH_EXISTS = () => existsSync(PATH);
 
 const TO_INITIAL_STATE = () => {
-    if (PATH_EXISTS()) REMOVE_PATH();
+    rmSync(PATH);
+    jest.clearAllMocks();
 };
 
 beforeEach(TO_INITIAL_STATE);
