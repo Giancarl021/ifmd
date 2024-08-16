@@ -19,7 +19,7 @@ const SAVED_PROPS: Record<string, string> = {
 
 const ARGS = (
     props: Flags = {},
-    savedProps: Record<string, string> = { name: 'Jest Test Runner' }
+    savedProps: Record<string, string> | null = { name: 'Jest Test Runner' }
 ): Parameters<typeof getProps> => {
     return [
         {
@@ -34,7 +34,14 @@ const ARGS = (
             }
         },
         Object.entries(props).reduce((acc, [key, value]) => {
+            // Prop prefix + prop separator + prop name
             acc['p:' + key] = value;
+            // Invalid: Missing prop prefix
+            acc[':' + key] = value;
+            // Invalid: Prop name not allowed
+            acc['p:$' + key] = value;
+            // Invalid: Missing prop separator and prefix
+            acc[key] = value;
             return acc;
         }, {} as Flags)
     ];
@@ -54,6 +61,10 @@ describe('util/getProps', () => {
         expect(getProps(...ARGS())).toMatchObject({
             name: 'Jest Test Runner'
         });
+    });
+
+    test('No flags / null saved props', () => {
+        expect(getProps(...ARGS({}, null))).toMatchObject({});
     });
 
     test('With flags / Default saved props', () => {
