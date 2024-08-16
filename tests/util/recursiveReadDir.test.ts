@@ -16,13 +16,13 @@ const DIR_PATH = locate('../../tmp' + RAND());
 
 const FILL_DIR = () => {
     for (let i = 0; i < 10; i++) {
-        const path = locate(`${DIR_PATH}/file${i}.${i < 5 ? 'a' : 'b'}`);
+        const path = locate(`${DIR_PATH}/F/file${i}.${i < 5 ? 'a' : 'b'}`);
         writeFileSync(path, String(RAND()));
     }
 };
 
 const MAKE_DIR = () => {
-    mkdirSync(DIR_PATH, { recursive: true });
+    mkdirSync(DIR_PATH + '/F', { recursive: true });
 };
 
 const REMOVE_DIR = () => {
@@ -34,7 +34,8 @@ const CLEAR_DIR = () => {
     MAKE_DIR();
 };
 
-const DIR_PATH_MAPPER = (filename: string) => locate(DIR_PATH + '/' + filename);
+const DIR_PATH_MAPPER = (filename: string) =>
+    locate(DIR_PATH + '/F/' + filename);
 
 beforeAll(MAKE_DIR);
 beforeEach(CLEAR_DIR);
@@ -87,5 +88,14 @@ describe('util/recursiveReadDir', () => {
                 DIR_PATH_MAPPER
             )
         );
+    });
+
+    test('Invalid directory', async () => {
+        await expect(
+            async () => await recursiveReadDir(String())
+        ).rejects.toThrow('Directory path is required');
+        await expect(
+            async () => await recursiveReadDir(DIR_PATH + DIR_PATH)
+        ).rejects.toThrow(DIR_PATH + ' is not a directory');
     });
 });

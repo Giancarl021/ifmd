@@ -22,7 +22,7 @@ export default function ParseMultiMarkdown() {
                 ${acc}
                 <div class="page-break"></div>
                 <div class="file-content">
-                    ${current.content}
+            ${current.content}
                 </div>
             `,
             ''

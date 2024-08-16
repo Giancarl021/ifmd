@@ -25,6 +25,7 @@ describe('util/parseDate', () => {
             '[object Object]'
         );
         expect(parseDate(false as unknown as string, DEFAULT)).toBe('false');
+        expect(parseDate('Invalid date', DEFAULT)).toBe('Invalid date');
     });
 
     test('Invalid operand input', () => {

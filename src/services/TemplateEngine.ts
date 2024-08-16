@@ -27,7 +27,7 @@ const socketScript = `
 </script>
 `;
 
-export default function () {
+export default function TemplateEngine() {
     async function _generate(
         template: TemplateData,
         localAssets: LocalAsset[],

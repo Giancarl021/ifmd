@@ -4,7 +4,7 @@ import WebServer from './WebServer';
 import constants from '../util/constants';
 import LocalAsset from '../interfaces/LocalAsset';
 
-export default function (
+export default function PdfGenerator(
     templatePath: string,
     margins: PDFMargin = constants.pdf.margins.default,
     serverPort: number = constants.webServer.defaultPort

@@ -7,16 +7,24 @@ describe('services/ParseMultiMarkdown', () => {
         expect(() => ParseMultiMarkdown()).not.toThrow();
     });
 
-    test('compile', () => {
+    test('compile with no files', async () => {
         const parser = ParseMultiMarkdown();
 
-        parser.compile({
-            description: '',
-            path: '',
-            title: '',
-            files: [],
-            createdAt: '',
-            generateIndex: true
+        expect(
+            await parser.compile({
+                description: 'Jest Test Runner',
+                path: '',
+                title: 'Jest Test Runner',
+                files: [],
+                createdAt: new Date(),
+                generateIndex: true
+            })
+        ).toEqual({
+            content: expect.stringMatching(
+                /<h1>Jest Test Runner<\/h1><p>Jest Test Runner<\/p>/
+            ),
+            title: 'Jest Test Runner',
+            localAssets: []
         });
     });
 });

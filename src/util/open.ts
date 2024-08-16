@@ -4,9 +4,8 @@ import { platform } from 'os';
 const openCommandMap = {
     win32: 'explorer',
     linux: 'xdg-open',
-    darwin: 'open',
     default: 'open'
-} as const;
+} as Record<NodeJS.Platform | 'default', string>;
 
 type OpenCommandMap = typeof openCommandMap;
 type OpenCommandMapKey = keyof OpenCommandMap;

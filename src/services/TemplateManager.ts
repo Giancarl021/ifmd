@@ -8,7 +8,7 @@ import locate from '@giancarl021/locate';
 
 assertDir(constants.templates.customRootPath);
 
-export default function () {
+export default function TemplateManager() {
     async function getDefaultTemplates() {
         return loadTemplateDirectory(constants.templates.defaultRootPath, true);
     }

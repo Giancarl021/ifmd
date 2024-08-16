@@ -16,7 +16,7 @@ interface Context {
     assetTable: Record<string, LocalAsset>;
 }
 
-export default function (
+export default function WebServer(
     serverPort: number,
     rootPath: string,
     useSockets: boolean

@@ -4,7 +4,7 @@ import WebServer from './WebServer';
 import TemplateData from '../interfaces/TemplateData';
 import LocalAsset from '../interfaces/LocalAsset';
 
-export default function (
+export default function Previewer(
     template: TemplateData,
     port: number = constants.webServer.defaultPort
 ) {

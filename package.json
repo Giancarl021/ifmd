@@ -24,6 +24,7 @@
         "preview": "node lib/index.js",
         "build": "tsc",
         "test": "jest",
+        "test:coverage": "jest --coverage",
         "postbuild": "node scripts/postbuild.js",
         "postinstall": "node scripts/postinstall.js",
         "git-add": "git add ."

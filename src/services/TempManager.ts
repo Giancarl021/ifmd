@@ -4,7 +4,7 @@ import copyFiles from 'recursive-copy';
 import locate from '@giancarl021/locate';
 import constants from '../util/constants';
 
-export default function () {
+export default function TempManager() {
     const tmpPath = locate(
         `${constants.temp.rootPath}/${Date.now()}.${Math.floor(
             Math.random() * 1000
