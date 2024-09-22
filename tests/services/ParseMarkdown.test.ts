@@ -45,15 +45,22 @@ describe('services/ParseMarkdown', () => {
         expect(
             parser.convert(
                 `# Jest Test Runner
-
-[link](./tests/services/ParseMarkdown.ts)`,
+![image](./image.png)
+[link](./tests/services/ParseMarkdown.ts)
+[localLink](#jest-test-runner)`,
                 ROOT
             )
         ).toEqual({
             content: expect.stringMatching(
-                /<p><a href="\.\/tests\/services\/ParseMarkdown\.ts">link<\/a><\/p>/
+                /<p><img alt="image" src="\.\/image\.png">\n?<a href="\.\/tests\/services\/ParseMarkdown\.ts">link<\/a>\n?<a href="#jest-test-runner">localLink<\/a><\/p>/
             ),
             localAssets: [
+                {
+                    originalPath: './image.png',
+                    owner: ROOT,
+                    path: locate(`${dirname(ROOT)}/image.png`),
+                    reference: expect.stringMatching(/[A-Z0-9\+\/=]/i)
+                },
                 {
                     originalPath: './tests/services/ParseMarkdown.ts',
                     owner: ROOT,

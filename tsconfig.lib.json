@@ -6,9 +6,8 @@
         "outDir": "lib",
         "strict": true,
         "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "allowJs": true
+        "resolveJsonModule": true
     },
-    "include": ["index.ts", "bin.ts", "tests/**/*.ts", "src/**/*.ts"],
+    "include": ["index.ts", "bin.ts", "src/**/*.ts"],
     "exclude": ["node_modules", "lib"]
 }

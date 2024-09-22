@@ -2,6 +2,7 @@ import type { JestConfigWithTsJest } from 'ts-jest';
 
 const config: JestConfigWithTsJest = {
     testMatch: ['<rootDir>/tests/**/*.test.ts'],
+    testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/lib/'],
     transformIgnorePatterns: [],
     moduleFileExtensions: [
         'js',
@@ -19,7 +20,7 @@ const config: JestConfigWithTsJest = {
         '^(\\.{1,2}/.*)\\.js$': '$1'
     },
     transform: {
-        '^.+\\.(j|t)sx?$': [
+        '^.+\\.tsx?$': [
             'ts-jest',
             {
                 useESM: false,

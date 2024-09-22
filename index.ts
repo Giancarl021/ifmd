@@ -11,15 +11,14 @@ import type {
 } from '@giancarl021/cli-core/interfaces';
 
 const APP_NAME = 'ifmd';
-const DEBUG_MODE = String(process.env.IFMD_DEBUG).toLowerCase() === 'true';
 
-async function main() {
+async function main(debugMode: boolean) {
     const behavior: Behavior = {};
 
     const _help: HelpDescriptor = { ...help };
     delete _help['$schema'];
 
-    if (DEBUG_MODE) {
+    if (debugMode) {
         behavior.exitOnError = false;
         behavior.returnResult = true;
     }
@@ -41,8 +40,4 @@ async function main() {
     return await runner.run();
 }
 
-const commandPromise = main();
-
-if (DEBUG_MODE) {
-    commandPromise.then(console.log).catch(console.error);
-}
+export default main;

@@ -1,5 +1,4 @@
 import { jest } from '@jest/globals';
-import type { PathOrFileDescriptor, WriteFileOptions } from 'fs';
 
 const fs = jest.createMockFromModule<typeof import('fs')>('fs');
 
