@@ -136,7 +136,14 @@ export default function TemplateEngine() {
         variables: Variables,
         level = 0
     ) {
-        if (level > 1) return content;
+        if (level === 0) {
+            let changedData: string[];
+            [variables.content, changedData] = applySetters(
+                variables.content,
+                variables
+            );
+            [content] = applySetters(content, variables, changedData);
+        } else if (level > 1) return content;
 
         const data = content.replace(
             /@@[a-zA-Z-_]+[0-9]*(\(.*?\))?/g,
@@ -175,6 +182,28 @@ export default function TemplateEngine() {
         );
 
         return data;
+    }
+
+    function applySetters(
+        data: string,
+        attributes: Variables,
+        ignore: string[] = []
+    ): [string, string[]] {
+        const changedVariables: string[] = [];
+        const _data = data.replace(/@@set\([a-zA-Z-_]+[0-9]*,.*?\)/g, match => {
+            const [key, value] = match
+                .slice(6, -1)
+                .split(',')
+                .map(str => str.trim());
+
+            if (['content', ...ignore].includes(key)) return '';
+
+            attributes[key] = value;
+            changedVariables.push(key);
+            return '';
+        });
+
+        return [_data, changedVariables];
     }
 
     return { generate, generateForPreview };

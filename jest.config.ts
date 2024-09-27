@@ -2,6 +2,8 @@ import type { JestConfigWithTsJest } from 'ts-jest';
 
 const config: JestConfigWithTsJest = {
     testMatch: ['<rootDir>/tests/**/*.test.ts'],
+    // collectCoverage: true,
+    collectCoverageFrom: ['<rootDir>/src/**/*.ts', '<rootDir>/index.ts'],
     testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/lib/'],
     transformIgnorePatterns: [],
     moduleFileExtensions: [

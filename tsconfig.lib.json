@@ -6,6 +6,7 @@
         "outDir": "lib",
         "strict": true,
         "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true
     },
     "include": ["index.ts", "bin.ts", "src/**/*.ts"],

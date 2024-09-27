@@ -3,7 +3,7 @@ import locate from '@giancarl021/locate';
 
 import ParseMarkdown from '../../src/services/ParseMarkdown';
 import constants from '../../src/util/constants';
-import { dirname } from 'path';
+import { basename, dirname } from 'path';
 
 const ROOT = locate('../../index.ts');
 
@@ -101,25 +101,24 @@ $$x = 1 + y$$`,
                 `# Jest Test Runner
 
 123`,
-                ROOT,
-                0
+                ROOT
             )
         ).toEqual({
             content: expect.stringMatching(/<p>123<\/p>/),
             localAssets: [],
             title: 'Jest Test Runner',
-            titleId: null
+            titleId: Buffer.from('Jest Test Runner').toString('hex')
         });
     });
 
     test('convertWithMetadata/No title conversion', () => {
         const parser = ParseMarkdown();
 
-        expect(parser.convertWithMetadata('123', ROOT, 0)).toEqual({
+        expect(parser.convertWithMetadata('123', ROOT)).toEqual({
             content: expect.stringMatching(/<p>123<\/p>/),
             localAssets: [],
-            title: constants.pdf.defaultTitle + ' 1',
-            titleId: null
+            title: basename(ROOT),
+            titleId: Buffer.from(basename(ROOT)).toString('hex')
         });
     });
 
@@ -131,8 +130,7 @@ $$x = 1 + y$$`,
                 `<h1 id="titleId">Jest Test Runner</h1>
 
 123`,
-                ROOT,
-                0
+                ROOT
             )
         ).toEqual({
             content: expect.stringMatching(/<p>123<\/p>/),

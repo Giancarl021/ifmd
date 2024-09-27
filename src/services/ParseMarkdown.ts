@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { CheerioAPI, load } from 'cheerio';
 import markedKatex from 'marked-katex-extension';
-import { dirname } from 'path';
+import { basename, dirname } from 'path';
 import locate from '@giancarl021/locate';
 import constants from '../util/constants';
 import LocalAsset from '../interfaces/LocalAsset';
@@ -72,20 +72,20 @@ export default function ParseMarkdown() {
         };
     }
 
-    function convertWithMetadata(
-        markdown: string,
-        pathOfOrigin: string,
-        index: number = 0
-    ) {
+    function convertWithMetadata(markdown: string, pathOfOrigin: string) {
         const html = parse(markdown);
 
         const $ = load(html);
 
-        const $h1 = $('h1:first-child');
+        const $h1 = $('h1:first-child').length
+            ? $('h1:first-child')
+            : $(`<h1>${basename(pathOfOrigin)}</h1>`).prependTo('body');
 
-        const title = $h1.text() || `${constants.pdf.defaultTitle} ${++index}`;
+        const title = $h1.text();
 
-        const titleId = $h1.attr('id') || null;
+        const titleId = $h1.attr('id') || Buffer.from(title).toString('hex');
+
+        $h1.attr('id', titleId);
 
         return {
             title,

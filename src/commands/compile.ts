@@ -152,7 +152,10 @@ const command: Command = async function (args, flags) {
         createdAt: new Date(manifestData.createdAt)
     };
 
-    const { title, content, localAssets } = await parser.compile(manifest);
+    const { title, content, localAssets } = await parser.compile(
+        manifest,
+        manifestPath
+    );
 
     const html = await engine.generate(
         templateData,
