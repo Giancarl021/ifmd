@@ -30,7 +30,7 @@ export default function ParseMarkdown() {
 
     function getLocalAssets($: CheerioAPI, pathOfOrigin: string) {
         const localAssets = $('[src], [href]')
-            .map((index, element) => {
+            .map((_, element) => {
                 const $element = $(element);
                 const asset = String(
                     $element.attr('src') ?? $element.attr('href')
@@ -42,7 +42,7 @@ export default function ParseMarkdown() {
                 const localAsset: LocalAsset = {
                     originalPath: asset,
                     path: locate(`${dirname(pathOfOrigin)}/${asset}`),
-                    reference: hash(`${pathOfOrigin}::${index}`),
+                    reference: hash(`${pathOfOrigin}::${asset}`),
                     owner: pathOfOrigin
                 };
 

@@ -29,6 +29,7 @@ describe('util/parseDate', () => {
     });
 
     test('Invalid operand input', () => {
+        expect(parseDate(DATE, 'Xalabaias')).toBe(DATE);
         expect(parseDate(DATE, null as unknown as string)).toBe(DATE);
         expect(parseDate(DATE, 10 as unknown as string)).toBe(DATE);
         expect(parseDate(DATE, {} as unknown as string)).toBe(DATE);

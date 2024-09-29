@@ -26,7 +26,13 @@ export default function parseDate(date: string, operand: DateOperand): string {
 
     const operation = hasOperator ? operand.charAt(0) : defaultOperation;
 
-    const millis = timestring(value, 'ms');
+    let millis: number;
+
+    try {
+        millis = timestring(value, 'ms');
+    } catch {
+        return date;
+    }
 
     const resultDate =
         operation === defaultOperation
