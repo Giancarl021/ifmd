@@ -15,25 +15,25 @@ describe('commands/setProp', () => {
     });
 
     test('Set invalid key property', async () => {
-        expect(setProp.wrap(['A B', 'value'], {})).rejects.toThrow(
+        await expect(setProp.wrap(['A B', 'value'], {})).rejects.toThrow(
             'Key must follow the regex /^[0-9a-zA-z-_]+$/'
         );
     });
 
     test('Set disallowed key property', async () => {
-        expect(setProp.wrap(['__proto__', 'value'], {})).rejects.toThrow(
+        await expect(setProp.wrap(['__proto__', 'value'], {})).rejects.toThrow(
             'Key name __proto__ is disallowed'
         );
     });
 
     test('Set empty key property', async () => {
-        expect(setProp.wrap(['', 'value'], {})).rejects.toThrow(
+        await expect(setProp.wrap(['', 'value'], {})).rejects.toThrow(
             'Key must be set to a value'
         );
     });
 
     test('Set empty value property', async () => {
-        expect(setProp.wrap(['prop', ''], {})).rejects.toThrow(
+        await expect(setProp.wrap(['prop', ''], {})).rejects.toThrow(
             'Value must be set to a non-empty String'
         );
     });
@@ -53,9 +53,9 @@ describe('commands/setProp', () => {
 
             expect(binder.data['props.prop']).toBeUndefined();
 
-            expect(setProp.wrap(['prop'], { unset: true })).rejects.toThrow(
-                'Global property prop not found'
-            );
+            await expect(
+                setProp.wrap(['prop'], { unset: true })
+            ).rejects.toThrow('Global property prop not found');
 
             expect(binder.data['props.prop']).toBeUndefined();
         }

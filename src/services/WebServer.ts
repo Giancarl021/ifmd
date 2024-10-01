@@ -1,11 +1,12 @@
 import { Server as ServerType, createServer } from 'http';
 import { Server } from 'socket.io';
 import serveHandler from 'serve-handler';
-import { parse } from 'url';
 import { Socket } from 'net';
 import Nullable from '../interfaces/Nullable';
 import LocalAsset from '../interfaces/LocalAsset';
 import { createReadStream, existsSync } from 'fs';
+import { lookup } from 'mime-types';
+import { basename } from 'path';
 
 type ServeHandlerOptions = Parameters<typeof serveHandler>[2];
 
@@ -15,6 +16,8 @@ interface Context {
     connections: Set<Socket>;
     assetTable: Record<string, LocalAsset>;
 }
+
+export type WebServerInstance = ReturnType<typeof WebServer>;
 
 export default function WebServer(
     serverPort: number,
@@ -35,7 +38,7 @@ export default function WebServer(
         directoryListing: false
     };
 
-    function reloadPage(localAssets: LocalAsset[]) {
+    function _createAssetTable(localAssets: LocalAsset[]) {
         context.assetTable = localAssets.reduce(
             (table, item) => {
                 table[item.reference] = item;
@@ -43,24 +46,20 @@ export default function WebServer(
             },
             {} as Record<string, LocalAsset>
         );
+    }
 
+    function reloadPage(localAssets: LocalAsset[]) {
+        _createAssetTable(localAssets);
         if (context.socketServer) context.socketServer.emit('reload');
     }
 
     async function start(localAssets: LocalAsset[]) {
-        context.assetTable = localAssets.reduce(
-            (table, item) => {
-                table[item.reference] = item;
-                return table;
-            },
-            {} as Record<string, LocalAsset>
-        );
+        _createAssetTable(localAssets);
 
         context.server = createServer((req, res) => {
             if (req.url) {
-                const baseUrl = parse(req.url);
-                if (baseUrl.pathname?.startsWith('/__dynamic_assets__/')) {
-                    const reference = baseUrl.pathname.replace(
+                if (req.url.includes('/__dynamic_assets__/')) {
+                    const reference = req.url.replace(
                         /^(.*)__dynamic_assets__\//,
                         ''
                     );
@@ -68,6 +67,12 @@ export default function WebServer(
                     const asset = context.assetTable[reference];
 
                     if (asset) {
+                        const mime = lookup(
+                            basename(asset.path).split('.')[1] ?? ''
+                        );
+
+                        if (mime) res.setHeader('Content-Type', mime);
+
                         if (!existsSync(asset.path)) {
                             res.writeHead(404);
                             res.end();

@@ -1,8 +1,11 @@
 import { existsSync as exists } from 'fs';
 import { mkdir, readFile, rm, writeFile } from 'fs/promises';
-import copyFiles from 'recursive-copy';
+import { ncp } from 'ncp';
+import { promisify } from 'util';
 import locate from '@giancarl021/locate';
 import constants from '../util/constants';
+
+const copyFiles = promisify(ncp).bind(ncp);
 
 export default function TempManager() {
     const tmpPath = locate(
@@ -24,6 +27,7 @@ export default function TempManager() {
     }
 
     async function loadLibraries() {
+        await mkdir(`${tmpPath}/__injected_libs__/`, { recursive: true });
         for (const lib in constants.frontEndLibs) {
             const path =
                 constants.frontEndLibs[
@@ -41,13 +45,7 @@ export default function TempManager() {
 
     async function fill(indexContent: string, rootPath: string) {
         await loadLibraries();
-        await new Promise((resolve, reject) => {
-            copyFiles(rootPath, tmpPath, err => {
-                if (err) return reject(err);
-
-                resolve(null);
-            });
-        });
+        await copyFiles(rootPath, tmpPath);
 
         await write('index.html', indexContent);
     }

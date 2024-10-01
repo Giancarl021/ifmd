@@ -90,6 +90,13 @@ export default function CommandBinder(commandName: string) {
         return boundCommands;
     }
 
+    function bindFlatCommands<Commands extends string>(): Record<
+        Commands,
+        BoundCommand
+    > {
+        return bindCommands() as Record<Commands, BoundCommand>;
+    }
+
     function bindCommand(): BoundCommand {
         const command = require(`../../src/commands/${commandName}`)
             .default as Command;
@@ -105,6 +112,7 @@ export default function CommandBinder(commandName: string) {
     return {
         bindCommand,
         bindCommands,
+        bindFlatCommands,
         afterEach,
         data,
         secrets

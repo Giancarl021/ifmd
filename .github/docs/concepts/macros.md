@@ -24,7 +24,7 @@ This macro is used to insert a value that was set by [property flags](./property
 
 If the value was not set by any of the methods mentioned above, the macro will not be replaced and will be rendered as is.
 
-These values can be used anywhere in the `index.html` of the template.
+These values can be used anywhere in the `index.html` of the template or in the documentation files that are being processed.
 
 > **Important:** Imported files are not processed by the macros, so the macros will not be replaced in the imported files. Only the `index.html` file is processed by the macros.
 
@@ -49,6 +49,12 @@ For example:
     <p>@@​description</p>
     @@content
 </body>
+```
+
+```markdown
+# My documentation
+
+Made by @@​name
 ```
 
 <h2 id="set"><code>@@​set(name, value)</code></h2>

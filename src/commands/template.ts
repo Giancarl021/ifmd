@@ -86,7 +86,7 @@ const commands: Commands = {
 
         await templateManager.deleteTemplate(templateName);
 
-        return `Template ${templateName} successful deleted`;
+        return `Template ${templateName} successfully deleted`;
     },
 
     async show(args) {

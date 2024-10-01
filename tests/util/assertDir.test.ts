@@ -8,6 +8,7 @@ import {
 } from '@jest/globals';
 
 jest.mock('fs');
+jest.mock('fs/promises');
 
 import { mkdirSync, existsSync, rmSync } from 'fs';
 
@@ -19,7 +20,7 @@ const CREATE_PATH = () => mkdirSync(PATH, { recursive: true });
 const PATH_EXISTS = () => existsSync(PATH);
 
 const TO_INITIAL_STATE = () => {
-    rmSync(PATH);
+    if (PATH_EXISTS()) rmSync(PATH, { recursive: true });
     jest.clearAllMocks();
 };
 

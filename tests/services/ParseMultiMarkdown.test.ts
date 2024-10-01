@@ -1,24 +1,37 @@
-import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
+import {
+    describe,
+    test,
+    expect,
+    beforeEach,
+    afterEach,
+    jest
+} from '@jest/globals';
 
 import ParseMultiMarkdown from '../../src/services/ParseMultiMarkdown';
 import locate from '@giancarl021/locate';
-import mock from 'mock-fs';
+import { unlinkSync, writeFileSync } from 'fs';
 
-const ROOT = locate('../..');
+jest.mock('fs');
+jest.mock('fs/promises');
+
+const ROOT = '/';
 
 beforeEach(() => {
-    mock({
-        'file1.md': `# File 1
+    writeFileSync(
+        '/file1.md',
+        `# File 1
 ![image](./image.png)
 [link](./tests/services/ParseMarkdown.ts)
-[localLink](#jest-test-runner)`,
-        'file2.md': '# File 2',
-        'file3.md': 'File 3'
-    });
+[localLink](#jest-test-runner)`
+    );
+    writeFileSync('/file2.md', '# File 2');
+    writeFileSync('/file3.md', 'File 3');
 });
 
 afterEach(() => {
-    mock.restore();
+    unlinkSync('/file1.md');
+    unlinkSync('/file2.md');
+    unlinkSync('/file3.md');
 });
 
 describe('services/ParseMultiMarkdown', () => {
@@ -59,7 +72,7 @@ describe('services/ParseMultiMarkdown', () => {
                     description: 'Jest Test Runner',
                     path: '',
                     title: 'Jest Test Runner',
-                    files: ['file1.md', 'file2.md', 'file3.md'],
+                    files: ['/file1.md', '/file2.md', '/file3.md'],
                     createdAt: new Date(),
                     generateIndex: true
                 },
@@ -73,14 +86,14 @@ describe('services/ParseMultiMarkdown', () => {
             localAssets: [
                 {
                     originalPath: './image.png',
-                    owner: locate(`${ROOT}/file1.md`),
-                    path: locate(`${ROOT}/image.png`),
+                    owner: locate('/file1.md'),
+                    path: locate('/image.png'),
                     reference: expect.stringMatching(/[A-Z0-9\+\/=]/i)
                 },
                 {
                     originalPath: './tests/services/ParseMarkdown.ts',
-                    owner: locate(`${ROOT}/file1.md`),
-                    path: locate(`${ROOT}/tests/services/ParseMarkdown.ts`),
+                    owner: locate('/file1.md'),
+                    path: locate('/tests/services/ParseMarkdown.ts'),
                     reference: expect.stringMatching(/[A-Z0-9\+\/=]/i)
                 }
             ]
