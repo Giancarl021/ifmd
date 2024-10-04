@@ -17,3 +17,9 @@ ifmd <command> [options] --prop:<name> <value>
 # or
 ifmd <command> [options] --p:<name> <value>
 ```
+
+## Exceptions
+
+Some properties cannot be assigned using property flags. These are: `content`, `date` and `title`.
+
+`title` and `content` come exclusively from the document being processed, and `date` can only be set by the `--date` flag.

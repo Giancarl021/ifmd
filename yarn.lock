@@ -348,14 +348,14 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@giancarl021/cli-core-docs-generator@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@giancarl021/cli-core-docs-generator/-/cli-core-docs-generator-0.1.0.tgz#aaacdd1c83d9952c2a0bbf530455c496fa743784"
-  integrity sha512-Rf7ek04hrXbY5lOTEKdrILgHLejX0uSiH6vysQC1j6lQxjVyRvUJKn6goS9voWOV3AlThHKk0vP0h+CsvlFDuw==
+"@giancarl021/cli-core-docs-generator@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.npmjs.org/@giancarl021/cli-core-docs-generator/-/cli-core-docs-generator-0.1.2.tgz#8b5596a92a0a71be660d9d25862e5818ad8a6163"
+  integrity sha512-QFVHfCAA4iU6wo0ITdvEbixP/NpGruTVn9WVzdDV3F3fF+D/TqVzY4eSebOuuhECx5DmyGmxeATQkIbUkCJFLw==
   dependencies:
     "@giancarl021/cli-core" "^0.1.3"
-    "@giancarl021/locate" "^0.1.6"
-    oo-ascii-tree "^1.65.0"
+    "@giancarl021/locate" "^0.1.7"
+    oo-ascii-tree "^1.103.1"
 
 "@giancarl021/cli-core-vault-extension@^0.1.4":
   version "0.1.4"
@@ -376,7 +376,7 @@
     fill-object "^0.1.1"
     regex-escape "^3.4.10"
 
-"@giancarl021/locate@^0.1.4", "@giancarl021/locate@^0.1.6", "@giancarl021/locate@^0.1.7":
+"@giancarl021/locate@^0.1.4", "@giancarl021/locate@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@giancarl021/locate/-/locate-0.1.7.tgz#f6dcd8c90183a72cd729561981194007743881ca"
   integrity sha512-0PB4zXZ5aK7FQhG2qE8NWRR7rx72uedkcVBGoFzVoVmXZtQn2rhDqoAk4B9sMYGK/RYCOxXAX5UCjRbaDmkIwg==
@@ -3481,9 +3481,9 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-oo-ascii-tree@^1.65.0:
+oo-ascii-tree@^1.103.1:
   version "1.103.1"
-  resolved "https://registry.yarnpkg.com/oo-ascii-tree/-/oo-ascii-tree-1.103.1.tgz#74d498282d7027dc3be15d78d87e52875ebaedce"
+  resolved "https://registry.npmjs.org/oo-ascii-tree/-/oo-ascii-tree-1.103.1.tgz#74d498282d7027dc3be15d78d87e52875ebaedce"
   integrity sha512-X0nmbb8xUUi637JXzCxY/K4AtO/I0fB5b7iiGaHJHu8IXBWV8TnQ4xqa0Igb/NoAg3OP2uXNhSeiTsErETOA/g==
 
 os-shim@^0.1.2:

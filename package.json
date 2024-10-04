@@ -57,7 +57,7 @@
         "timestring": "^7.0.0"
     },
     "devDependencies": {
-        "@giancarl021/cli-core-docs-generator": "^0.1.0",
+        "@giancarl021/cli-core-docs-generator": "^0.1.2",
         "@jest/globals": "^29.7.0",
         "@types/dompurify": "^3.0.5",
         "@types/escape-html": "^1.0.4",
