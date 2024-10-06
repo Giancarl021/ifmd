@@ -122,13 +122,15 @@ const commands: Commands = {
         if (template.isNative)
             throw new Error('Native templates cannot be previewed');
 
+        const defaultPort = await constants.webServer.defaultPort();
+
         const port =
             Number(
                 this.helpers.valueOrDefault(
                     this.helpers.getFlag('web-server-port'),
-                    String(constants.webServer.defaultPort)
+                    String(defaultPort)
                 )
-            ) || constants.webServer.defaultPort;
+            ) || defaultPort;
 
         const baseFilePath: string = this.helpers.valueOrDefault(
             this.helpers.getFlag('f', 'base-file'),

@@ -6,21 +6,29 @@ import {
     jest,
     beforeEach
 } from '@jest/globals';
+import waitForExpect from 'wait-for-expect';
+import mockConsole from 'jest-mock-console';
 import CommandBinder from '../__utils__/CommandBinder';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { findFreePorts } from 'find-free-ports';
 import constants from '../../src/util/constants';
 import locate from '@giancarl021/locate';
+import { dirname } from 'path';
 
 jest.mock('fs');
 jest.mock('fs/promises');
 jest.mock('child_process');
+jest.setMock('../../src/util/constants', require('../__mocks__/constants'));
 
 const templates = ['Document', 'Presentation', 'Spreadsheet'];
 const allTemplates = [...templates, ...templates.map(t => 'custom-' + t)];
 
 const binder = CommandBinder('template');
 
+let restoreConsole: () => void;
+
 beforeEach(() => {
+    restoreConsole = mockConsole();
     for (const template of [...templates, 'Invalid', 'Corrupted']) {
         mkdirSync(
             locate(`${constants.templates.defaultRootPath}/${template}`),
@@ -46,6 +54,7 @@ beforeEach(() => {
                         : {}
                 )
             );
+
             writeFileSync(
                 `${constants.templates.customRootPath}/${template}/manifest.json`,
                 JSON.stringify(
@@ -59,7 +68,33 @@ beforeEach(() => {
                         : {}
                 )
             );
+
+            writeFileSync(
+                `${constants.templates.defaultRootPath}/${template}/index.html`,
+                '<html></html>'
+            );
+
+            writeFileSync(
+                `${constants.templates.customRootPath}/${template}/index.html`,
+                '<html></html>'
+            );
         }
+    }
+
+    mkdirSync(dirname(constants.templates.defaultSampleTemplateFile), {
+        recursive: true
+    });
+
+    writeFileSync(
+        constants.templates.defaultSampleTemplateFile,
+        '# Sample content'
+    );
+
+    for (const lib in constants.frontEndLibs) {
+        mkdirSync(
+            constants.frontEndLibs[lib as keyof typeof constants.frontEndLibs],
+            { recursive: true }
+        );
     }
 });
 
@@ -72,6 +107,20 @@ afterEach(() => {
         recursive: true,
         force: true
     });
+
+    rmSync(dirname(constants.templates.defaultSampleTemplateFile), {
+        recursive: true,
+        force: true
+    });
+
+    for (const lib in constants.frontEndLibs) {
+        rmSync(
+            constants.frontEndLibs[lib as keyof typeof constants.frontEndLibs],
+            { force: true, recursive: true }
+        );
+    }
+
+    restoreConsole();
     jest.restoreAllMocks();
     binder.afterEach();
 });
@@ -277,5 +326,127 @@ describe('commands/template', () => {
                 'Native templates cannot be previewed'
             );
         });
+
+        test('Custom template with default port', async () => {
+            const promise = template.preview(['custom-Document'], {});
+
+            await waitForExpect(() => {
+                expect(console.log).toHaveBeenCalledTimes(1);
+                expect(console.log).toHaveBeenCalledWith(
+                    expect.stringMatching(
+                        /Preview available on http:\/\/localhost:\d+/
+                    )
+                );
+            }, 1e4);
+
+            writeFileSync(
+                `${constants.templates.customRootPath}/Document/index.html`,
+                '<html><head></head><body></body></html>'
+            );
+
+            await waitForExpect(() => {
+                expect(console.log).toHaveBeenCalledTimes(2);
+                expect(console.log).toHaveBeenCalledWith(
+                    'Changes detected, reloading preview...'
+                );
+            });
+
+            process.emit('SIGINT');
+
+            const result = await promise;
+
+            expect(
+                (console.log as any).mock.calls.length
+            ).toBeGreaterThanOrEqual(4);
+            expect(console.log).toHaveBeenCalledWith('Closing web server...');
+            expect(console.log).toHaveBeenCalledWith(
+                'Removing temporary files...'
+            );
+            expect(result).toBe('Preview ended');
+        }, 1e5);
+
+        test('Custom template with valid port', async () => {
+            const [port] = await findFreePorts(1);
+
+            const promise = template.preview(['custom-Document'], {
+                'web-server-port': port
+            });
+
+            await waitForExpect(() => {
+                expect(console.log).toHaveBeenCalledTimes(1);
+                expect(console.log).toHaveBeenCalledWith(
+                    port
+                        ? `Preview available on http://localhost:${port}`
+                        : expect.stringMatching(
+                              /Preview available on http:\/\/localhost:\d+/
+                          )
+                );
+            }, 1e4);
+
+            writeFileSync(
+                `${constants.templates.customRootPath}/Document/index.html`,
+                '<html><head></head><body></body></html>'
+            );
+
+            await waitForExpect(() => {
+                expect(console.log).toHaveBeenCalledTimes(2);
+                expect(console.log).toHaveBeenCalledWith(
+                    'Changes detected, reloading preview...'
+                );
+            });
+
+            process.emit('SIGINT');
+
+            const result = await promise;
+
+            expect(
+                (console.log as any).mock.calls.length
+            ).toBeGreaterThanOrEqual(4);
+            expect(console.log).toHaveBeenCalledWith('Closing web server...');
+            expect(console.log).toHaveBeenCalledWith(
+                'Removing temporary files...'
+            );
+            expect(result).toBe('Preview ended');
+        }, 1e5);
+
+        test('Custom template with invalid port', async () => {
+            const promise = template.preview(['custom-Document'], {
+                'web-server-port': 0
+            });
+
+            await waitForExpect(() => {
+                expect(console.log).toHaveBeenCalledTimes(1);
+                expect(console.log).toHaveBeenCalledWith(
+                    expect.stringMatching(
+                        /Preview available on http:\/\/localhost:\d+/
+                    )
+                );
+            }, 1e4);
+
+            writeFileSync(
+                `${constants.templates.customRootPath}/Document/index.html`,
+                '<html><head></head><body></body></html>'
+            );
+
+            await waitForExpect(() => {
+                expect(console.log).toHaveBeenCalledTimes(2);
+                expect(console.log).toHaveBeenCalledWith(
+                    'Changes detected, reloading preview...'
+                );
+            });
+
+            process.emit('SIGINT');
+
+            const result = await promise;
+
+            expect(
+                (console.log as any).mock.calls.length
+            ).toBeGreaterThanOrEqual(4);
+            expect(console.log).toHaveBeenCalledWith('Closing web server...');
+            expect(console.log).toHaveBeenCalledWith(
+                'Removing temporary files...'
+            );
+            expect(result).toBe('Preview ended');
+        }, 1e5);
     });
 });

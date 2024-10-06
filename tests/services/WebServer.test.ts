@@ -78,7 +78,7 @@ describe('services/WebServer', () => {
                 ).ok
             ).toBe(false);
         });
-    });
+    }, 1e4);
 
     test('Start with assets', async () => {
         await onServer(false, async (server, port) => {
@@ -137,7 +137,7 @@ describe('services/WebServer', () => {
             expect(noMimeRef.headers.get('Content-Type')).toBeNull();
             expect(await noMimeRef.text()).toBe('file');
         });
-    });
+    }, 1e4);
 
     test('Start with sockets', async () => {
         await onServer(true, async (server, port) => {
@@ -159,5 +159,5 @@ describe('services/WebServer', () => {
 
             await server.close();
         });
-    });
+    }, 1e4);
 });

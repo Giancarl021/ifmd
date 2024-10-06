@@ -17,4 +17,8 @@ describe('util/constants functions', () => {
             files
         });
     });
+
+    test('webServer/defaultPort', async () => {
+        await expect(constants.webServer.defaultPort()).resolves.toBe(3000);
+    });
 });

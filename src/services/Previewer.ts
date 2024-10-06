@@ -4,10 +4,7 @@ import WebServer from './WebServer';
 import TemplateData from '../interfaces/TemplateData';
 import LocalAsset from '../interfaces/LocalAsset';
 
-export default function Previewer(
-    template: TemplateData,
-    port: number = constants.webServer.defaultPort
-) {
+export default function Previewer(template: TemplateData, port: number) {
     const temp = TempManager();
 
     const webServer = WebServer(port, temp.getRootPath(), true);

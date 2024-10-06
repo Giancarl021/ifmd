@@ -6,8 +6,8 @@ import LocalAsset from '../interfaces/LocalAsset';
 
 export default function PdfGenerator(
     templatePath: string,
-    margins: PDFMargin = constants.pdf.margins.default,
-    serverPort: number = constants.webServer.defaultPort
+    serverPort: number,
+    margins: PDFMargin = constants.pdf.margins.default
 ) {
     const temp = TempManager();
     const webServer = WebServer(serverPort, temp.getRootPath(), false);

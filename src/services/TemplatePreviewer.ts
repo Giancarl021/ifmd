@@ -9,7 +9,7 @@ import { readFileSync } from 'fs';
 export default function TemplatePreviewer(
     template: TemplateData,
     baseFilePath: string,
-    port: number = constants.webServer.defaultPort,
+    port: number,
     extraProps: Record<string, string> = {}
 ) {
     const parser = ParseMarkdown();

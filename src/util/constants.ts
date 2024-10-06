@@ -51,7 +51,9 @@ export default {
         mermaid: locate('node_modules/mermaid')
     },
     webServer: {
-        defaultPort: 3000
+        async defaultPort() {
+            return 3000;
+        }
     },
     pdf: {
         defaultTitle: 'Trabalho',

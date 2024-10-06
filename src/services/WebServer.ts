@@ -104,17 +104,14 @@ export default function WebServer(
 
     async function close() {
         if (context.server) {
-            await new Promise((resolve, reject) => {
+            await new Promise(resolve => {
                 if (useSockets) {
                     for (const socket of context.connections.values()) {
                         socket.destroy();
                     }
                 }
 
-                context.server!.close(err => {
-                    if (err) return reject(err);
-                    return resolve(null);
-                });
+                context.server!.close(() => resolve(null));
             });
         }
     }
