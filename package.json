@@ -41,18 +41,18 @@
         "@giancarl021/locate": "^0.1.7",
         "any-date-parser": "^1.5.4",
         "cheerio": "^1.0.0",
-        "chokidar": "^3.6.0",
+        "chokidar": "^4.0.1",
         "dompurify": "^3.1.7",
         "escape-html": "^1.0.3",
-        "ignore": "^5.3.2",
+        "ignore": "^6.0.2",
         "jsdom": "^25.0.1",
         "katex": "^0.16.11",
         "marked": "^14.1.2",
         "marked-katex-extension": "^5.1.2",
-        "mermaid": "^11.2.1",
+        "mermaid": "^11.3.0",
         "mime-types": "^2.1.35",
         "ncp": "^2.0.0",
-        "puppeteer": "^23.4.1",
+        "puppeteer": "^23.5.0",
         "serve-handler": "^6.1.5",
         "socket.io": "^4.8.0",
         "timestring": "^7.0.0"
@@ -65,7 +65,7 @@
         "@types/jsdom": "^21.1.7",
         "@types/mime-types": "^2.1.4",
         "@types/ncp": "^2.0.8",
-        "@types/node": "^22.5.1",
+        "@types/node": "^22.7.4",
         "@types/serve-handler": "^6.1.4",
         "@types/timestring": "^6.0.5",
         "cross-env": "^7.0.3",
@@ -79,12 +79,13 @@
         "socket.io-client": "^4.8.0",
         "ts-jest": "^29.2.5",
         "ts-node": "^10.9.2",
-        "typescript": "^5.5.4",
+        "typescript": "^5.6.2",
         "wait-for-expect": "^3.0.2"
     },
     "resolutions": {
         "path-to-regexp": "^8.2.0",
-        "glob": "^9.0.0"
+        "glob": "^9.0.0",
+        "cookie": "^0.x"
     },
     "keywords": [
         "docs",

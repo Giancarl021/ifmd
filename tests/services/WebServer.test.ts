@@ -17,6 +17,14 @@ jest.mock('fs/promises');
 import { mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'fs';
 import locate from '@giancarl021/locate';
 
+const findPort = async () => {
+    const [port] = await findFreePorts(1, {
+        startPort: 2e4,
+        endPort: 2.5e4
+    });
+    return port;
+};
+
 beforeEach(() => {
     writeFileSync('/index.html', 'Hello, World!');
     mkdirSync(locate('assets'), { recursive: true });
@@ -34,7 +42,7 @@ async function onServer(
     sockets: boolean,
     test: (server: WebServerInstance, port: number) => Promise<void>
 ): Promise<void> {
-    const [port] = await findFreePorts(1);
+    const port = await findPort();
 
     const server = WebServer(port, '/', sockets);
 

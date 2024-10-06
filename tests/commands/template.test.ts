@@ -27,6 +27,14 @@ const binder = CommandBinder('template');
 
 let restoreConsole: () => void;
 
+const findPort = async () => {
+    const [port] = await findFreePorts(1, {
+        startPort: 2.5e4,
+        endPort: 3e4
+    });
+    return port;
+};
+
 beforeEach(() => {
     restoreConsole = mockConsole();
     for (const template of [...templates, 'Invalid', 'Corrupted']) {
@@ -366,7 +374,7 @@ describe('commands/template', () => {
         }, 1e5);
 
         test('Custom template with valid port', async () => {
-            const [port] = await findFreePorts(1);
+            const port = await findPort();
 
             const promise = template.preview(['custom-Document'], {
                 'web-server-port': port
