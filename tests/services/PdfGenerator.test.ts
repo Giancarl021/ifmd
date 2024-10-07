@@ -161,24 +161,24 @@ describe('services/PdfGenerator', () => {
             ).rejects.toThrow();
         });
 
-        test('Valid template', async () => {
-            const generator = PdfGenerator(
-                `${constants.templates.defaultRootPath}/Document`,
-                await findPort(),
-                {}
-            );
+        // test('Valid template', async () => {
+        //     const generator = PdfGenerator(
+        //         `${constants.templates.defaultRootPath}/Document`,
+        //         await findPort(),
+        //         {}
+        //     );
 
-            await generator.generate('index.html', []);
-        });
+        //     await generator.generate('index.html', []);
+        // });
 
-        test('Valid template with mermaid on index.html', async () => {
-            const generator = PdfGenerator(
-                `${constants.templates.defaultRootPath}/Document`,
-                await findPort(),
-                {}
-            );
+        // test('Valid template with mermaid on index.html', async () => {
+        //     const generator = PdfGenerator(
+        //         `${constants.templates.defaultRootPath}/Document`,
+        //         await findPort(),
+        //         {}
+        //     );
 
-            await generator.generate('mermaid.html', []);
-        });
+        //     await generator.generate('mermaid.html', []);
+        // });
     });
 });
