@@ -392,7 +392,7 @@ describe('commands/template', () => {
                 'Removing temporary files...'
             );
             expect(result).toBe('Preview ended');
-        }, 1e5);
+        }, 3e4);
 
         test('Custom template with valid port', async () => {
             const port = await findPort();
@@ -446,7 +446,7 @@ describe('commands/template', () => {
                 'Removing temporary files...'
             );
             expect(result).toBe('Preview ended');
-        }, 1e5);
+        }, 3e4);
 
         test('Custom template with invalid port', async () => {
             const promise = template.preview(['custom-Document'], {
@@ -506,6 +506,6 @@ describe('commands/template', () => {
                 'Removing temporary files...'
             );
             expect(result).toBe('Preview ended');
-        }, 1e5);
+        }, 3e4);
     });
 });

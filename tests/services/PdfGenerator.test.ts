@@ -139,7 +139,7 @@ afterEach(() => {
     jest.restoreAllMocks();
 });
 
-describe('services/Previewer', () => {
+describe('services/PdfGenerator', () => {
     test('Initialization', async () => {
         PdfGenerator(
             `${constants.templates.defaultRootPath}/Document`,

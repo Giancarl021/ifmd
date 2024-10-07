@@ -184,7 +184,7 @@ describe('services/TemplatePreviewer', () => {
             process.emit('SIGINT');
 
             await promise;
-        }, 1e5);
+        }, 3e4);
     });
 
     describe('update operation', () => {
@@ -215,6 +215,6 @@ describe('services/TemplatePreviewer', () => {
             process.emit('SIGINT');
 
             await promise;
-        }, 1e5);
+        }, 3e4);
     });
 });

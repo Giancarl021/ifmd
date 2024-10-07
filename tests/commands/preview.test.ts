@@ -165,7 +165,7 @@ describe('commands/preview', () => {
         process.emit('SIGINT');
 
         await promise;
-    }, 1e5);
+    }, 3e4);
 
     test('With default port', async () => {
         const promise = preview(
@@ -185,7 +185,7 @@ describe('commands/preview', () => {
         process.emit('SIGINT');
 
         await promise;
-    }, 1e5);
+    }, 3e4);
 
     test('Default template', async () => {
         const port = await findPort();
@@ -204,7 +204,7 @@ describe('commands/preview', () => {
         process.emit('SIGINT');
 
         await promise;
-    }, 1e5);
+    }, 3e4);
 
     test('Custom template', async () => {
         const port = await findPort();

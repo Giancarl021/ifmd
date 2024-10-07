@@ -11,7 +11,7 @@ import { writeFileSync, rmSync, mkdirSync } from 'fs';
 
 import recursiveReadDir from '../../src/util/recursiveReadDir';
 
-const RAND = () => Math.floor(1e5 * Math.random());
+const RAND = () => Math.floor(3e4 * Math.random());
 const DIR_PATH = locate('../../tmp' + RAND());
 
 const FILL_DIR = () => {
