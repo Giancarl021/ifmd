@@ -17,7 +17,7 @@ import { dirname } from 'path';
 jest.mock('fs');
 jest.mock('fs/promises');
 
-import TemplatePreviewer from '../../src/services/TemplatePreviewer';
+import PdfGenerator from '../../src/services/PdfGenerator';
 
 const templates = ['Document', 'Presentation', 'Spreadsheet'];
 
@@ -40,6 +40,7 @@ beforeEach(() => {
                 recursive: true
             }
         );
+
         mkdirSync(locate(`${constants.templates.customRootPath}/${template}`), {
             recursive: true
         });
@@ -81,6 +82,16 @@ beforeEach(() => {
             writeFileSync(
                 `${constants.templates.customRootPath}/${template}/index.html`,
                 '<html></html>'
+            );
+
+            writeFileSync(
+                `${constants.templates.defaultRootPath}/${template}/mermaid.html`,
+                '<html><pre class="mermaid"></pre></html>'
+            );
+
+            writeFileSync(
+                `${constants.templates.customRootPath}/${template}/mermaid.html`,
+                '<html><pre class="mermaid"></pre></html>'
             );
         }
     }
@@ -128,93 +139,46 @@ afterEach(() => {
     jest.restoreAllMocks();
 });
 
-describe('services/TemplatePreviewer', () => {
+describe('services/Previewer', () => {
     test('Initialization', async () => {
-        TemplatePreviewer(
-            {
-                createdAt: new Date(),
-                name: 'Document',
-                isNative: true,
-                path: constants.templates.defaultRootPath + '/Document'
-            },
-            constants.templates.defaultSampleTemplateFile,
-            await findPort()
+        PdfGenerator(
+            `${constants.templates.defaultRootPath}/Document`,
+            await findPort(),
+            {}
         );
     });
 
-    describe('preview operation', () => {
+    describe('generate operation', () => {
         test('Invalid template', async () => {
-            const port = await findPort();
-            const previewer = TemplatePreviewer(
-                {
-                    createdAt: new Date(),
-                    name: 'Document',
-                    isNative: true,
-                    path: constants.templates.defaultRootPath + '/Invalid'
-                },
-                constants.templates.defaultSampleTemplateFile,
-                port
+            const generator = PdfGenerator(
+                `${constants.templates.defaultRootPath}/Invalid`,
+                await findPort(),
+                {}
             );
 
-            await expect(previewer.preview()).rejects.toThrow();
+            await expect(() =>
+                generator.generate('index.html', [])
+            ).rejects.toThrow();
         });
 
         test('Valid template', async () => {
-            const port = await findPort();
-            const previewer = TemplatePreviewer(
-                {
-                    createdAt: new Date(),
-                    name: 'Document',
-                    isNative: true,
-                    path: constants.templates.defaultRootPath + '/Document'
-                },
-                constants.templates.defaultSampleTemplateFile,
-                port
+            const generator = PdfGenerator(
+                `${constants.templates.defaultRootPath}/Document`,
+                await findPort(),
+                {}
             );
 
-            const promise = previewer.preview();
+            await generator.generate('index.html', []);
+        });
 
-            await waitForExpect(() => {
-                expect(console.log).toBeCalledTimes(1);
-                expect(console.log).toHaveBeenCalledWith(
-                    `Preview available on http://localhost:${port}`
-                );
-            }, 1e4);
-
-            process.emit('SIGINT');
-
-            await promise;
-        }, 1e5);
-    });
-
-    describe('update operation', () => {
-        test('Update files', async () => {
-            const port = await findPort();
-            const previewer = TemplatePreviewer(
-                {
-                    createdAt: new Date(),
-                    name: 'Document',
-                    isNative: true,
-                    path: constants.templates.defaultRootPath + '/Document'
-                },
-                constants.templates.defaultSampleTemplateFile,
-                port
+        test('Valid template with mermaid on index.html', async () => {
+            const generator = PdfGenerator(
+                `${constants.templates.defaultRootPath}/Document`,
+                await findPort(),
+                {}
             );
 
-            const promise = previewer.preview();
-
-            await waitForExpect(() => {
-                expect(console.log).toBeCalledTimes(1);
-                expect(console.log).toHaveBeenCalledWith(
-                    `Preview available on http://localhost:${port}`
-                );
-            }, 1e4);
-
-            await previewer.update();
-
-            process.emit('SIGINT');
-
-            await promise;
-        }, 1e5);
+            await generator.generate('mermaid.html', []);
+        });
     });
 });

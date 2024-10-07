@@ -279,6 +279,7 @@ describe('commands/template', () => {
                 'Template MyTemplate created at ' +
                     locate(constants.templates.customRootPath + '/mytemplate')
             );
+
             expect(await template.remove(['MyTemplate'], {})).toBe(
                 'Template MyTemplate successfully deleted'
             );
@@ -347,9 +348,21 @@ describe('commands/template', () => {
                 );
             }, 1e4);
 
+            const port = (console.log as any).mock.calls
+                .find((call: any[][]) =>
+                    call[0].includes('http://localhost')
+                )[0]
+                .match(/\d+/)[0];
+
+            const html = await (await fetch('http://localhost:' + port)).text();
+
+            expect(html).toMatch(
+                /<html><head>(.|\n)*<\/head><body><\/body><\/html>/m
+            );
+
             writeFileSync(
                 `${constants.templates.customRootPath}/Document/index.html`,
-                '<html><head></head><body></body></html>'
+                '<html><head></head><body>Xalabaias</body></html>'
             );
 
             await waitForExpect(() => {
@@ -357,7 +370,15 @@ describe('commands/template', () => {
                 expect(console.log).toHaveBeenCalledWith(
                     'Changes detected, reloading preview...'
                 );
-            });
+            }, 1e4);
+
+            const updatedHtml = await (
+                await fetch('http://localhost:' + port)
+            ).text();
+
+            expect(updatedHtml).toMatch(
+                /<html><head>(.|\n)*<\/head><body>Xalabaias<\/body><\/html>/m
+            );
 
             process.emit('SIGINT');
 
@@ -383,17 +404,19 @@ describe('commands/template', () => {
             await waitForExpect(() => {
                 expect(console.log).toHaveBeenCalledTimes(1);
                 expect(console.log).toHaveBeenCalledWith(
-                    port
-                        ? `Preview available on http://localhost:${port}`
-                        : expect.stringMatching(
-                              /Preview available on http:\/\/localhost:\d+/
-                          )
+                    `Preview available on http://localhost:${port}`
                 );
             }, 1e4);
 
+            const html = await (await fetch('http://localhost:' + port)).text();
+
+            expect(html).toMatch(
+                /<html><head>(.|\n)*<\/head><body><\/body><\/html>/m
+            );
+
             writeFileSync(
                 `${constants.templates.customRootPath}/Document/index.html`,
-                '<html><head></head><body></body></html>'
+                '<html><head></head><body>Xalabaias</body></html>'
             );
 
             await waitForExpect(() => {
@@ -401,7 +424,15 @@ describe('commands/template', () => {
                 expect(console.log).toHaveBeenCalledWith(
                     'Changes detected, reloading preview...'
                 );
-            });
+            }, 1e4);
+
+            const updatedHtml = await (
+                await fetch('http://localhost:' + port)
+            ).text();
+
+            expect(updatedHtml).toMatch(
+                /<html><head>(.|\n)*<\/head><body>Xalabaias<\/body><\/html>/m
+            );
 
             process.emit('SIGINT');
 
@@ -431,9 +462,21 @@ describe('commands/template', () => {
                 );
             }, 1e4);
 
+            const port = (console.log as any).mock.calls
+                .find((call: any[][]) =>
+                    call[0].includes('http://localhost')
+                )[0]
+                .match(/\d+/)[0];
+
+            const html = await (await fetch('http://localhost:' + port)).text();
+
+            expect(html).toMatch(
+                /<html><head>(.|\n)*<\/head><body><\/body><\/html>/m
+            );
+
             writeFileSync(
                 `${constants.templates.customRootPath}/Document/index.html`,
-                '<html><head></head><body></body></html>'
+                '<html><head></head><body>Xalabaias</body></html>'
             );
 
             await waitForExpect(() => {
@@ -441,7 +484,15 @@ describe('commands/template', () => {
                 expect(console.log).toHaveBeenCalledWith(
                     'Changes detected, reloading preview...'
                 );
-            });
+            }, 1e4);
+
+            const updatedHtml = await (
+                await fetch('http://localhost:' + port)
+            ).text();
+
+            expect(updatedHtml).toMatch(
+                /<html><head>(.|\n)*<\/head><body>Xalabaias<\/body><\/html>/m
+            );
 
             process.emit('SIGINT');
 

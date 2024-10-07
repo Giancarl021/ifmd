@@ -67,7 +67,7 @@ export default function ParseMarkdown() {
 
         return {
             title,
-            content: $('body').html(),
+            content: $('body').html()!,
             localAssets: getLocalAssets($, pathOfOrigin)
         };
     }

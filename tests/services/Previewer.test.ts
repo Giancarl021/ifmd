@@ -17,7 +17,7 @@ import { dirname } from 'path';
 jest.mock('fs');
 jest.mock('fs/promises');
 
-import TemplatePreviewer from '../../src/services/TemplatePreviewer';
+import Previewer from '../../src/services/Previewer';
 
 const templates = ['Document', 'Presentation', 'Spreadsheet'];
 
@@ -128,51 +128,33 @@ afterEach(() => {
     jest.restoreAllMocks();
 });
 
-describe('services/TemplatePreviewer', () => {
+describe('services/Previewer', () => {
     test('Initialization', async () => {
-        TemplatePreviewer(
+        Previewer(
             {
                 createdAt: new Date(),
                 name: 'Document',
                 isNative: true,
                 path: constants.templates.defaultRootPath + '/Document'
             },
-            constants.templates.defaultSampleTemplateFile,
             await findPort()
         );
     });
 
     describe('preview operation', () => {
-        test('Invalid template', async () => {
-            const port = await findPort();
-            const previewer = TemplatePreviewer(
-                {
-                    createdAt: new Date(),
-                    name: 'Document',
-                    isNative: true,
-                    path: constants.templates.defaultRootPath + '/Invalid'
-                },
-                constants.templates.defaultSampleTemplateFile,
-                port
-            );
-
-            await expect(previewer.preview()).rejects.toThrow();
-        });
-
         test('Valid template', async () => {
             const port = await findPort();
-            const previewer = TemplatePreviewer(
+            const previewer = Previewer(
                 {
                     createdAt: new Date(),
                     name: 'Document',
                     isNative: true,
                     path: constants.templates.defaultRootPath + '/Document'
                 },
-                constants.templates.defaultSampleTemplateFile,
                 port
             );
 
-            const promise = previewer.preview();
+            const promise = previewer.preview('<h1>Title</h1>', []);
 
             await waitForExpect(() => {
                 expect(console.log).toBeCalledTimes(1);
@@ -190,18 +172,17 @@ describe('services/TemplatePreviewer', () => {
     describe('update operation', () => {
         test('Update files', async () => {
             const port = await findPort();
-            const previewer = TemplatePreviewer(
+            const previewer = Previewer(
                 {
                     createdAt: new Date(),
                     name: 'Document',
                     isNative: true,
                     path: constants.templates.defaultRootPath + '/Document'
                 },
-                constants.templates.defaultSampleTemplateFile,
                 port
             );
 
-            const promise = previewer.preview();
+            const promise = previewer.preview('<h1>Title</h1>', []);
 
             await waitForExpect(() => {
                 expect(console.log).toBeCalledTimes(1);
@@ -210,7 +191,7 @@ describe('services/TemplatePreviewer', () => {
                 );
             }, 1e4);
 
-            await previewer.update();
+            await previewer.update('<h1>Title</h1>', []);
 
             process.emit('SIGINT');
 

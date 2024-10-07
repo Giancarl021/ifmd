@@ -3,6 +3,7 @@ import constants from '../util/constants';
 import WebServer from './WebServer';
 import TemplateData from '../interfaces/TemplateData';
 import LocalAsset from '../interfaces/LocalAsset';
+import { existsSync } from 'fs';
 
 export default function Previewer(template: TemplateData, port: number) {
     const temp = TempManager();
@@ -23,6 +24,7 @@ export default function Previewer(template: TemplateData, port: number) {
         await temp.fill(html, template.path);
 
         await webServer.start(localAssets);
+
         console.log(`Preview available on http://localhost:${port}`);
 
         await new Promise(resolve => {

@@ -38,7 +38,7 @@ export default function TemplatePreviewer(
             template,
             {
                 title,
-                content: content ?? '',
+                content,
                 ...extraProps
             },
             localAssets,
