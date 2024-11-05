@@ -25,8 +25,8 @@ let restoreConsole: () => void;
 
 const findPort = async () => {
     const [port] = await findFreePorts(1, {
-        startPort: 2.5e4,
-        endPort: 3e4
+        startPort: 3.5e4,
+        endPort: 4.5e4
     });
     return port;
 };

@@ -23,8 +23,8 @@
         "prepreview": "yarn build",
         "preview": "node lib/bin.js",
         "build": "tsc -p tsconfig.lib.json",
-        "test": "jest --runInBand",
-        "test:coverage": "jest --runInBand --coverage",
+        "test": "jest --runInBand --detectOpenHandles",
+        "test:coverage": "jest --runInBand --coverage --detectOpenHandles",
         "postbuild": "node scripts/postbuild.js",
         "postinstall": "node scripts/postinstall.js",
         "git-add": "git add ."

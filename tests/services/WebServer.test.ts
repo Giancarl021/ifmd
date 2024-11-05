@@ -19,8 +19,8 @@ import locate from '@giancarl021/locate';
 
 const findPort = async () => {
     const [port] = await findFreePorts(1, {
-        startPort: 2e4,
-        endPort: 2.5e4
+        startPort: 4.5e4,
+        endPort: 5.5e4
     });
     return port;
 };
