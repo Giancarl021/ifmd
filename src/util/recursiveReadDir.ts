@@ -27,7 +27,7 @@ async function getFiles(
     return files.flat() as string[];
 }
 
-export default async function (
+export default async function recursiveReadDir(
     directoryPath: string,
     filterCallback: FilterCallback = defaultFilter
 ): Promise<string[]> {

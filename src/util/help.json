@@ -160,7 +160,14 @@
     },
     "set-prop": {
         "description": "Set global properties to be used as variables in templates",
-        "args": ["key", "value"]
+        "args": ["key", "value"],
+        "flags": {
+            "u": {
+                "aliases": ["unset"],
+                "description": "Unset a global property. If this flag is set, the `value` argument is ignored",
+                "optional": true
+            }
+        }
     },
     "template": {
         "description": "Manage custom templates",

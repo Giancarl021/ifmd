@@ -2,13 +2,16 @@ import constants from '../util/constants';
 import assertDir from '../util/assertDir';
 import { existsSync } from 'fs';
 import { lstat, mkdir, readFile, readdir, rm, writeFile } from 'fs/promises';
-import copyFiles from 'recursive-copy';
+import { ncp } from 'ncp';
+import { promisify } from 'util';
 import TemplateData from '../interfaces/TemplateData';
 import locate from '@giancarl021/locate';
 
+const copyFiles = promisify(ncp).bind(ncp);
+
 assertDir(constants.templates.customRootPath);
 
-export default function () {
+export default function TemplateManager() {
     async function getDefaultTemplates() {
         return loadTemplateDirectory(constants.templates.defaultRootPath, true);
     }
@@ -82,13 +85,7 @@ export default function () {
 
         if (!seedTemplate) throw new Error('Invalid seed template');
 
-        await new Promise((resolve, reject) => {
-            copyFiles(seedTemplate.path, path, err => {
-                if (err) return reject(err);
-
-                resolve(null);
-            });
-        });
+        await copyFiles(seedTemplate.path, path);
 
         const manifestPath = locate(`${path}/manifest.json`);
 

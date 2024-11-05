@@ -1,6 +1,6 @@
 # ifmd
 
-![](../src/templates/Document/assets/img/favicon.svg)
+![](./src/templates/Document/assets/img/favicon.svg)
 
 Markdown-to-PDF renderer for my college assignments that allows custom templates.
 

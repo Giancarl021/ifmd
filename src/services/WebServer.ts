@@ -1,11 +1,12 @@
 import { Server as ServerType, createServer } from 'http';
 import { Server } from 'socket.io';
 import serveHandler from 'serve-handler';
-import { parse } from 'url';
 import { Socket } from 'net';
 import Nullable from '../interfaces/Nullable';
 import LocalAsset from '../interfaces/LocalAsset';
 import { createReadStream, existsSync } from 'fs';
+import { lookup } from 'mime-types';
+import { basename } from 'path';
 
 type ServeHandlerOptions = Parameters<typeof serveHandler>[2];
 
@@ -16,7 +17,9 @@ interface Context {
     assetTable: Record<string, LocalAsset>;
 }
 
-export default function (
+export type WebServerInstance = ReturnType<typeof WebServer>;
+
+export default function WebServer(
     serverPort: number,
     rootPath: string,
     useSockets: boolean
@@ -35,26 +38,28 @@ export default function (
         directoryListing: false
     };
 
-    function reloadPage(localAssets: LocalAsset[]) {
-        context.assetTable = localAssets.reduce((table, item) => {
-            table[item.reference] = item;
-            return table;
-        }, {} as Record<string, LocalAsset>);
+    function _createAssetTable(localAssets: LocalAsset[]) {
+        context.assetTable = localAssets.reduce(
+            (table, item) => {
+                table[item.reference] = item;
+                return table;
+            },
+            {} as Record<string, LocalAsset>
+        );
+    }
 
+    function reloadPage(localAssets: LocalAsset[]) {
+        _createAssetTable(localAssets);
         if (context.socketServer) context.socketServer.emit('reload');
     }
 
     async function start(localAssets: LocalAsset[]) {
-        context.assetTable = localAssets.reduce((table, item) => {
-            table[item.reference] = item;
-            return table;
-        }, {} as Record<string, LocalAsset>);
+        _createAssetTable(localAssets);
 
         context.server = createServer((req, res) => {
             if (req.url) {
-                const baseUrl = parse(req.url);
-                if (baseUrl.pathname?.startsWith('/__dynamic_assets__/')) {
-                    const reference = baseUrl.pathname.replace(
+                if (req.url.includes('/__dynamic_assets__/')) {
+                    const reference = req.url.replace(
                         /^(.*)__dynamic_assets__\//,
                         ''
                     );
@@ -62,6 +67,12 @@ export default function (
                     const asset = context.assetTable[reference];
 
                     if (asset) {
+                        const mime = lookup(
+                            basename(asset.path).split('.')[1] ?? ''
+                        );
+
+                        if (mime) res.setHeader('Content-Type', mime);
+
                         if (!existsSync(asset.path)) {
                             res.writeHead(404);
                             res.end();
@@ -93,17 +104,14 @@ export default function (
 
     async function close() {
         if (context.server) {
-            await new Promise((resolve, reject) => {
+            await new Promise(resolve => {
                 if (useSockets) {
                     for (const socket of context.connections.values()) {
                         socket.destroy();
                     }
                 }
 
-                context.server!.close(err => {
-                    if (err) return reject(err);
-                    return resolve(null);
-                });
+                context.server!.close(() => resolve(null));
             });
         }
     }

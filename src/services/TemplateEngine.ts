@@ -1,12 +1,11 @@
 import { CheerioAPI, load } from 'cheerio';
-import constants from '../util/constants';
 import { readFile } from 'fs/promises';
 import locate from '@giancarl021/locate';
 import TemplateData from '../interfaces/TemplateData';
 import parseDate from '../util/parseDate';
 import LocalAsset from '../interfaces/LocalAsset';
 
-type Variables = Record<string, string> & {
+export type Variables = Record<string, string> & {
     content: string;
     title: string;
 };
@@ -27,13 +26,13 @@ const socketScript = `
 </script>
 `;
 
-export default function () {
+export default function TemplateEngine() {
     async function _generate(
         template: TemplateData,
         localAssets: LocalAsset[],
         variables: Variables,
         serverPort: number,
-        isPreview: boolean = false
+        isPreview: boolean
     ) {
         const baseHtml = await readFile(
             locate(`${template.path}/index.html`),
@@ -91,7 +90,7 @@ export default function () {
         template: TemplateData,
         variables: Variables,
         localAssets: LocalAsset[],
-        previewPort: number = constants.webServer.defaultPort
+        previewPort: number
     ) {
         return await _generate(
             template,
@@ -109,26 +108,16 @@ export default function () {
     ): CheerioAPI {
         if (!localAssets.length) return load(html);
 
-        const isSingleFile = localAssets
-            .slice(1)
-            .every(asset => asset.owner === localAssets[0].owner);
+        let parsedHtml = html;
 
-        if (isSingleFile) {
-            let parsedHtml = html;
-
-            for (const asset of localAssets) {
-                parsedHtml = parsedHtml.replaceAll(
-                    asset.originalPath,
-                    `http://localhost:${serverPort}/__dynamic_assets__/${asset.reference}`
-                );
-            }
-
-            return load(parsedHtml);
+        for (const asset of localAssets) {
+            parsedHtml = parsedHtml.replaceAll(
+                asset.originalPath,
+                `http://localhost:${serverPort}/__dynamic_assets__/${asset.reference}`
+            );
         }
 
-        const $ = load(html);
-
-        return $;
+        return load(parsedHtml);
     }
 
     function replaceVariables(
@@ -136,12 +125,17 @@ export default function () {
         variables: Variables,
         level = 0
     ) {
-        if (level > 1) return content;
+        if (level === 0) {
+            variables.content = applySetters(variables.content, variables);
+            content = applySetters(content, variables);
+        }
 
         const data = content.replace(
-            /@@[a-zA-Z-_]+[0-9]*(\(.*?\))?/g,
+            /@@[\\a-zA-Z-_]+[0-9]*(\(.*?\))?/g,
             match => {
                 const key = match.slice(2).replace(operandRegex, '');
+
+                if (key.startsWith('\\')) return match.replace(/@@\\/, '@@');
 
                 const operand = (match.match(operandRegex)?.[0] ?? '').replace(
                     /^\(|\)$/g,
@@ -155,6 +149,8 @@ export default function () {
 
                 switch (key) {
                     case 'content':
+                        if (level > 0) return match;
+
                         result = replaceVariables(
                             variables.content,
                             variables,
@@ -175,6 +171,22 @@ export default function () {
         );
 
         return data;
+    }
+
+    function applySetters(data: string, attributes: Variables): string {
+        const _data = data.replace(/@@set\([a-zA-Z-_]+[0-9]*,.*?\)/g, match => {
+            const [key, value] = match
+                .slice(6, -1)
+                .split(',')
+                .map(str => str.trim());
+
+            if (Object.keys(attributes).includes(key)) return '';
+
+            attributes[key] = value;
+            return '';
+        });
+
+        return _data;
     }
 
     return { generate, generateForPreview };

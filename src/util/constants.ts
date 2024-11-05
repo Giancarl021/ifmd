@@ -1,10 +1,20 @@
 import locate from '@giancarl021/locate';
 import CompilationData from '../interfaces/CompilationData';
+import { VaultExtensionOptions } from '@giancarl021/cli-core-vault-extension/interfaces';
+
+const dataRootPath = locate('~/.ifmd');
 
 const defaultManifest: Omit<CompilationData, 'files' | 'path' | 'createdAt'> = {
     title: 'Compilation',
     description: null,
     generateIndex: true
+};
+
+const vaultConfig: VaultExtensionOptions = {
+    baseData: {
+        name: 'Unknown'
+    },
+    dataPath: locate(dataRootPath + '/vars.json')
 };
 
 export default {
@@ -13,7 +23,7 @@ export default {
         defaultRootPath: locate('src/templates'),
         defaultTemplateName: 'Document',
         defaultSampleTemplateFile: locate('src/templates/sample.md')
-    } as const,
+    },
     compilation: {
         getDefaultManifest(root: string, files: string[]) {
             const manifest: CompilationData = {
@@ -25,23 +35,26 @@ export default {
 
             return manifest;
         }
-    } as const,
+    },
     data: {
-        rootPath: locate('~/.ifmd'),
+        rootPath: dataRootPath,
         varKeyRegex: /^[0-9a-zA-z-_]+$/,
         propsKey: 'props',
         propFlagPrefixes: ['p', 'prop'] as string[],
-        propsFlagSeparator: ':'
+        propsFlagSeparator: ':',
+        vaultConfig
     } as const,
     temp: {
         rootPath: locate('tmp')
-    } as const,
+    },
     frontEndLibs: {
         mermaid: locate('node_modules/mermaid')
-    } as const,
+    },
     webServer: {
-        defaultPort: 3000
-    } as const,
+        async defaultPort() {
+            return 3000;
+        }
+    },
     pdf: {
         defaultTitle: 'Trabalho',
         margins: {
@@ -51,7 +64,7 @@ export default {
                 bottom: '20px',
                 left: '20px',
                 right: '20px'
-            } as const
-        } as const
-    } as const
-};
+            }
+        }
+    }
+} as const;

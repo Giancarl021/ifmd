@@ -47,13 +47,15 @@ const command: Command = async function (args, flags) {
         constants.templates.defaultTemplateName
     );
 
+    const defaultPort = await constants.webServer.defaultPort();
+
     const port =
         Number(
             this.helpers.valueOrDefault(
                 this.helpers.getFlag('web-server-port'),
-                String(constants.webServer.defaultPort)
+                String(defaultPort)
             )
-        ) || constants.webServer.defaultPort;
+        ) || defaultPort;
 
     const templateManager = TemplateManager();
 
@@ -61,7 +63,7 @@ const command: Command = async function (args, flags) {
 
     const parser = ParseMarkdown();
     const engine = TemplateEngine();
-    const generator = PdfGenerator(templateData.path, margins, port);
+    const generator = PdfGenerator(templateData.path, port, margins);
 
     const rawContent = await readFile(path, 'utf8');
 

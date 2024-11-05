@@ -19,7 +19,7 @@ const command: Command = async function (args, flags) {
 
     if (!directory) throw new Error('Directory is required');
 
-    const path = locate(directory);
+    const path = locate(directory, true);
 
     if (!exists(path) || !(await lstat(path)).isDirectory())
         throw new Error(`${directory} is not a directory`);
@@ -33,13 +33,15 @@ const command: Command = async function (args, flags) {
     const manifestPath = locate(`${path}/manifest.json`);
     const manifestExists = exists(manifestPath);
 
+    const defaultPort = await constants.webServer.defaultPort();
+
     const port =
         Number(
             this.helpers.valueOrDefault(
                 this.helpers.getFlag('web-server-port'),
-                String(constants.webServer.defaultPort)
+                String(defaultPort)
             )
-        ) || constants.webServer.defaultPort;
+        ) || defaultPort;
 
     const globalMargin = this.helpers.valueOrDefault(
         this.helpers.getFlag('m', 'margin'),
@@ -90,7 +92,7 @@ const command: Command = async function (args, flags) {
 
     const parser = ParseMultiMarkdown();
     const engine = TemplateEngine();
-    const generator = PdfGenerator(templateData.path, margins, port);
+    const generator = PdfGenerator(templateData.path, port, margins);
 
     if (generateManifest) {
         const _ignoreFilePath = ignoreFilePath ? locate(ignoreFilePath) : null;
@@ -152,7 +154,10 @@ const command: Command = async function (args, flags) {
         createdAt: new Date(manifestData.createdAt)
     };
 
-    const { title, content, localAssets } = await parser.compile(manifest);
+    const { title, content, localAssets } = await parser.compile(
+        manifest,
+        manifestPath
+    );
 
     const html = await engine.generate(
         templateData,

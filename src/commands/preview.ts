@@ -17,13 +17,15 @@ const command: Command = async function (args, flags) {
 
     const path = locate(file, true);
 
+    const defaultPort = await constants.webServer.defaultPort();
+
     const port =
         Number(
             this.helpers.valueOrDefault(
                 this.helpers.getFlag('web-server-port'),
-                String(constants.webServer.defaultPort)
+                String(defaultPort)
             )
-        ) || constants.webServer.defaultPort;
+        ) || defaultPort;
 
     if (!exists(path)) throw new Error(`File ${file} not found`);
 

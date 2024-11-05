@@ -1,7 +1,10 @@
 const { existsSync: exists } = require('fs');
 const { mkdir } = require('fs/promises');
-const copy = require('recursive-copy');
+const { ncp } = require('ncp');
+const { promisify } = require('util');
 const _locate = require('@giancarl021/locate');
+
+const copy = promisify(ncp).bind(ncp);
 
 const injectedModules = ['mermaid'];
 

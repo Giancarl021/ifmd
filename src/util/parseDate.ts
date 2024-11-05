@@ -3,27 +3,36 @@ import timestring from 'timestring';
 
 const parse: (date: string) => Date = parser.exportAsFunction().bind(parser);
 
-const defaultOperation = '+';
-const allowedOperations = [defaultOperation, '-'];
+const defaultOperation = '+' as const;
+const allowedOperations: Readonly<DateOperator[]> = [defaultOperation, '-'];
 
-export default function (date: string, operand: string): string {
+export type DateOperator = '+' | '-';
+export type DateOperand = `${DateOperator | ''}${string}`;
+
+export default function parseDate(date: string, operand: DateOperand): string {
+    if (!date || typeof date !== 'string') return String(date);
+
     const dateObject = parse(date);
 
-    if (isNaN(Number(dateObject))) {
-        return date;
-    }
+    if (isNaN(Number(dateObject))) return date;
 
-    if (!operand) {
-        return date;
-    }
+    if (!operand || typeof operand !== 'string') return date;
 
-    const hasOperator = allowedOperations.includes(operand.charAt(0));
+    const hasOperator = allowedOperations.includes(
+        operand.charAt(0) as DateOperator
+    );
 
     const value = hasOperator ? operand.slice(1) : operand;
 
     const operation = hasOperator ? operand.charAt(0) : defaultOperation;
 
-    const millis = timestring(value, 'ms');
+    let millis: number;
+
+    try {
+        millis = timestring(value, 'ms');
+    } catch {
+        return date;
+    }
 
     const resultDate =
         operation === defaultOperation
@@ -39,18 +48,4 @@ function add(date: Date, millis: number) {
 
 function subtract(date: Date, millis: number) {
     return new Date(date.getTime() - millis);
-}
-
-function utcDate(date: Date) {
-    return new Date(
-        Date.UTC(
-            date.getUTCFullYear(),
-            date.getUTCMonth(),
-            date.getUTCDate(),
-            date.getUTCHours(),
-            date.getUTCMinutes(),
-            date.getUTCSeconds(),
-            date.getUTCMilliseconds()
-        )
-    );
 }
