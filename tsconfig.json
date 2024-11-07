@@ -7,7 +7,7 @@
         "strict": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "skipDefaultLibCheck": false,
+        "skipDefaultLibCheck": true,
         "resolveJsonModule": true,
         "allowJs": true
     },

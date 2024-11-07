@@ -207,6 +207,21 @@
                 "description": "Remove a custom template",
                 "args": ["template-name"]
             },
+            "import": {
+                "description": "Import a template from a ZIP file on the local filesystem or remote URL",
+                "args": ["path/to/file.zip|url"],
+                "flags": {
+                    "a": {
+                        "aliases": ["as", "alias"],
+                        "description": "Change the name of the imported template",
+                        "values": ["<template-name>"]
+                    }
+                }
+            },
+            "export": {
+                "description": "Export a custom template to a ZIP file",
+                "args": ["template-name", "path/to/file.zip"]
+            },
             "preview": {
                 "description": "Create a web preview of the specified template with a sample document and live reload on changes",
                 "args": ["template-name"],

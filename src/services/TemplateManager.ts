@@ -1,10 +1,14 @@
 import constants from '../util/constants';
 import assertDir from '../util/assertDir';
+import { archiveFolder, extract } from 'zip-lib';
+import isUrl from 'is-url-http';
+import fetch from 'node-fetch-commonjs';
 import { existsSync } from 'fs';
 import { lstat, mkdir, readFile, readdir, rm, writeFile } from 'fs/promises';
 import { ncp } from 'ncp';
 import { promisify } from 'util';
 import TemplateData from '../interfaces/TemplateData';
+import TempManager from './TempManager';
 import locate from '@giancarl021/locate';
 
 const copyFiles = promisify(ncp).bind(ncp);
@@ -128,12 +132,96 @@ export default function TemplateManager() {
         return template;
     }
 
+    async function importTemplate(pathOrUrl: string, alias?: string) {
+        const isHttp = isUrl(pathOrUrl);
+        const temp = TempManager();
+
+        await temp.createDir('extracted');
+        const extractedDirName = temp.getFilePath('extracted');
+
+        try {
+            if (isHttp) {
+                const response = await fetch(pathOrUrl);
+
+                if (!response.ok)
+                    throw new Error(
+                        `Failed to fetch ${pathOrUrl}: ${response.status} - ${response.statusText}`
+                    );
+
+                const buffer = Buffer.from(await response.arrayBuffer());
+
+                const zipName = 'downloaded.zip';
+
+                await temp.create();
+                await temp.write(zipName, buffer);
+
+                await extract(temp.getFilePath(zipName), extractedDirName);
+            } else {
+                const path = locate(pathOrUrl, true);
+
+                const isValidPath =
+                    existsSync(path) && (await lstat(path)).isFile();
+
+                if (!isValidPath)
+                    throw new Error('Template zip file not found at ' + path);
+
+                await extract(path, extractedDirName);
+            }
+
+            const manifest = await loadTemplate(extractedDirName, false);
+
+            if (!manifest) throw new Error('Invalid template zip');
+
+            const templateName = (alias || manifest.name)
+                .trim()
+                .replace(/\s\s+/g, '');
+
+            manifest.name = templateName;
+
+            await temp.write(
+                'extracted/manifest.json',
+                JSON.stringify(manifest, null, 4)
+            );
+
+            const allTemplates = await getAllTemplates();
+
+            if (allTemplates.find(t => t.name === templateName))
+                throw new Error(
+                    `Template with name ${templateName} already exists. Use the --alias flag to import this template with a different name`
+                );
+
+            await copyFiles(
+                extractedDirName,
+                locate(`${constants.templates.customRootPath}/${templateName}`)
+            );
+
+            return templateName;
+        } finally {
+            await temp.remove();
+        }
+    }
+
+    async function exportTemplate(name: string, path: string) {
+        const allTemplates = await getAllTemplates();
+
+        const template = allTemplates.find(t => t.name === name);
+
+        if (!template) throw new Error(`Template "${name}" does not exist`);
+
+        if (template.isNative)
+            throw new Error('Cannot export native templates');
+
+        await archiveFolder(template.path, path);
+    }
+
     return {
         getDefaultTemplates,
         getCustomTemplates,
         getAllTemplates,
         createTemplate,
         deleteTemplate,
-        getTemplate
+        getTemplate,
+        importTemplate,
+        exportTemplate
     };
 }

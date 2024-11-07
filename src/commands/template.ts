@@ -163,6 +163,37 @@ const commands: Commands = {
         await watcher.close();
 
         return 'Preview ended';
+    },
+
+    async import(args) {
+        const [pathOrUrl] = args;
+
+        const alias =
+            this.helpers.getFlag('alias', 'as', 'a')?.toString() ?? undefined;
+
+        if (!pathOrUrl) throw new Error('File path or URL must be provided');
+
+        const manager = TemplateManager();
+
+        const templateName = await manager.importTemplate(pathOrUrl, alias);
+
+        return `Template ${templateName} successfully imported`;
+    },
+
+    async export(args) {
+        const [templateName, path] = args;
+        if (!templateName) throw new Error('Template name is required');
+        if (!path) throw new Error('Output path is required');
+
+        const manager = TemplateManager();
+
+        const _path = path.endsWith('.zip')
+            ? path
+            : `${path}/${templateName}.zip`;
+
+        await manager.exportTemplate(templateName, _path);
+
+        return `Template ${templateName} successfully exported to ${_path}`;
     }
 };
 

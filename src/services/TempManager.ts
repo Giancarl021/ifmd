@@ -4,6 +4,7 @@ import { ncp } from 'ncp';
 import { promisify } from 'util';
 import locate from '@giancarl021/locate';
 import constants from '../util/constants';
+import recursiveReadDir from '../util/recursiveReadDir';
 
 const copyFiles = promisify(ncp).bind(ncp);
 
@@ -50,12 +51,16 @@ export default function TempManager() {
         await write('index.html', indexContent);
     }
 
-    async function write(relativePath: string, data: string) {
+    async function write(relativePath: string, data: string | Buffer) {
         await writeFile(`${tmpPath}/${relativePath}`, data);
     }
 
     async function read(relativePath: string) {
         return await readFile(`${tmpPath}/${relativePath}`, 'utf8');
+    }
+
+    async function createDir(relativePath: string) {
+        await mkdir(`${tmpPath}/${relativePath}`, { recursive: true });
     }
 
     function getFilePath(relativePath: string) {
@@ -73,6 +78,7 @@ export default function TempManager() {
         fill,
         write,
         read,
+        createDir,
         getRootPath,
         getFilePath
     };

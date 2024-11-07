@@ -6,6 +6,7 @@
         "outDir": "lib",
         "strict": true,
         "esModuleInterop": true,
+        "skipDefaultLibCheck": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true
     },
