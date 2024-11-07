@@ -11,7 +11,14 @@ jest.mock('fs');
 jest.mock('fs/promises');
 
 import TempManager from '../../src/services/TempManager';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import {
+    existsSync,
+    mkdirSync,
+    readdirSync,
+    readFileSync,
+    rmSync,
+    writeFileSync
+} from 'fs';
 import locate from '@giancarl021/locate';
 import constants from '../../src/util/constants';
 
@@ -184,6 +191,20 @@ describe('services/TempManager', () => {
         expect(readFileSync(`${tmp.getRootPath()}/data/test.txt`, 'utf8')).toBe(
             'test'
         );
+
+        await tmp.clear();
+    });
+
+    test('createDir', async () => {
+        const tmp = TempManager();
+
+        await tmp.create();
+
+        expect(readdirSync(tmp.getRootPath())).toEqual([]);
+
+        await tmp.createDir('xalabaias');
+
+        expect(readdirSync(tmp.getRootPath())).toEqual(['xalabaias']);
 
         await tmp.clear();
     });

@@ -1,5 +1,6 @@
 import { Commands } from '@giancarl021/cli-core/interfaces';
 import chokidar from 'chokidar';
+import locate from '@giancarl021/locate';
 import TemplateManager from '../services/TemplateManager';
 import open from '../util/open';
 import constants from '../util/constants';
@@ -187,9 +188,10 @@ const commands: Commands = {
 
         const manager = TemplateManager();
 
-        const _path = path.endsWith('.zip')
-            ? path
-            : `${path}/${templateName}.zip`;
+        const _path = locate(
+            path.endsWith('.zip') ? path : `${path}/${templateName}.zip`,
+            true
+        );
 
         await manager.exportTemplate(templateName, _path);
 

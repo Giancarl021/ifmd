@@ -9,9 +9,11 @@ import {
 
 jest.mock('fs');
 jest.mock('fs/promises');
+jest.mock('node-fetch-commonjs');
 
 import TemplateManager from '../../src/services/TemplateManager';
-import { mkdirSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'fs';
+import { archiveFolder } from 'zip-lib';
 import locate from '@giancarl021/locate';
 import constants from '../../src/util/constants';
 
@@ -35,7 +37,7 @@ function toTemplateData(template: string, native: boolean) {
     };
 }
 
-beforeEach(() => {
+beforeEach(async () => {
     for (const template of [...templates, 'Invalid', 'Corrupted']) {
         mkdirSync(
             locate(`${constants.templates.defaultRootPath}/${template}`),
@@ -76,6 +78,27 @@ beforeEach(() => {
             );
         }
     }
+
+    mkdirSync('tmp', { recursive: true });
+
+    writeFileSync(
+        'tmp/manifest.json',
+        JSON.stringify({
+            name: 'custom-tmp',
+            createdAt: new Date().toISOString(),
+            path: 'tmp',
+            isNative: false
+        })
+    );
+
+    await archiveFolder('tmp', 'tmp/tmp.zip');
+
+    await archiveFolder(
+        `${constants.templates.defaultRootPath}/Document`,
+        'tmp/Document.zip'
+    );
+
+    await archiveFolder(constants.templates.defaultRootPath, 'tmp/Invalid.zip');
 });
 
 afterEach(() => {
@@ -89,6 +112,9 @@ afterEach(() => {
             force: true
         });
     }
+
+    rmSync('tmp', { recursive: true, force: true });
+
     jest.restoreAllMocks();
 });
 
@@ -161,5 +187,97 @@ describe('services/TemplateManager', () => {
         await expect(
             TemplateManager().deleteTemplate('Document')
         ).rejects.toThrow('Template "Document" does not exist');
+    });
+
+    test('Import file template', async () => {
+        const temp = TemplateManager();
+
+        expect(
+            await temp.importTemplate('tmp/Document.zip', 'custom-Template')
+        ).toBe('custom-Template');
+
+        await temp.deleteTemplate('custom-Template');
+    });
+
+    test('Import file template on inexistent file', async () => {
+        const temp = TemplateManager();
+
+        await expect(() =>
+            temp.importTemplate('/Inexistent-Document.zip', 'custom-Template')
+        ).rejects.toThrow(
+            'Template zip file not found at /Inexistent-Document.zip'
+        );
+    });
+
+    test('Import file template with existing name', async () => {
+        const temp = TemplateManager();
+
+        await expect(() =>
+            temp.importTemplate('tmp/Document.zip', 'custom-Document')
+        ).rejects.toThrow(
+            'Template with name custom-Document already exists. Use the --alias flag to import this template with a different name'
+        );
+    });
+
+    test('Import invalid ZIP file', async () => {
+        const temp = TemplateManager();
+
+        await expect(() =>
+            temp.importTemplate('tmp/Invalid.zip', 'custom-Document')
+        ).rejects.toThrow('Invalid template zip');
+    });
+
+    test('Import file template without alias', async () => {
+        const temp = TemplateManager();
+
+        expect(await temp.importTemplate('tmp/tmp.zip')).toBe('custom-tmp');
+
+        await temp.deleteTemplate('custom-tmp');
+    });
+
+    test('Import URL template', async () => {
+        const temp = TemplateManager();
+
+        expect(
+            await temp.importTemplate(
+                'http://www.ok.com',
+                'custom-URL-Template'
+            )
+        ).toBe('custom-URL-Template');
+
+        await temp.deleteTemplate('custom-URL-Template');
+    });
+
+    test('Import URL template with non-compliant server', async () => {
+        const temp = TemplateManager();
+
+        await expect(() =>
+            temp.importTemplate('http://www.not-ok.com', 'custom-URL-Template')
+        ).rejects.toThrow(
+            'Failed to fetch http://www.not-ok.com: 400 - Bad Request'
+        );
+    });
+
+    test('Export custom template', async () => {
+        const temp = TemplateManager();
+        await temp.exportTemplate('custom-Document', 'tmp/CustomDocument.zip');
+
+        expect(readFileSync('tmp/CustomDocument.zip')).toBeInstanceOf(Buffer);
+    });
+
+    test('Export native template', async () => {
+        const temp = TemplateManager();
+
+        await expect(() =>
+            temp.exportTemplate('Document', 'NativeDocument.zip')
+        ).rejects.toThrow('Cannot export native templates');
+    });
+
+    test('Export inexistent template', async () => {
+        const temp = TemplateManager();
+
+        await expect(() =>
+            temp.exportTemplate('Xalabaias', 'InexistentDocument.zip')
+        ).rejects.toThrow('Template "Xalabaias" does not exist');
     });
 });

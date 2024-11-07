@@ -4,7 +4,6 @@ import { ncp } from 'ncp';
 import { promisify } from 'util';
 import locate from '@giancarl021/locate';
 import constants from '../util/constants';
-import recursiveReadDir from '../util/recursiveReadDir';
 
 const copyFiles = promisify(ncp).bind(ncp);
 

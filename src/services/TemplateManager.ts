@@ -172,11 +172,12 @@ export default function TemplateManager() {
 
             if (!manifest) throw new Error('Invalid template zip');
 
-            const templateName = (alias || manifest.name)
+            const templateName = String(alias || manifest.name)
                 .trim()
                 .replace(/\s\s+/g, '');
 
             manifest.name = templateName;
+            manifest.isNative = false;
 
             await temp.write(
                 'extracted/manifest.json',
