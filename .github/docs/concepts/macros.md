@@ -18,6 +18,12 @@ Example:
 @@123 --> @@123
 ```
 
+## `@@​title`
+
+This macro is used to set the Document Title. This value is **always** the first `h1` element on the Markdown verbatim, so no nested macros are allowed.
+
+This is the only flag that cannot be altered by any other means.
+
 ## `@@<name>`
 
 This macro is used to insert a value that was set by [property flags](./property-flags.md) or by the [`@@​set`](#set) macro. The macro is replaced by the value when the template is rendered.

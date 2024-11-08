@@ -86,14 +86,6 @@ const command: Command = async function (args, flags) {
         true
     );
 
-    const templateManager = TemplateManager();
-
-    const templateData = await templateManager.getTemplate(template);
-
-    const parser = ParseMultiMarkdown();
-    const engine = TemplateEngine();
-    const generator = PdfGenerator(templateData.path, port, margins);
-
     if (generateManifest) {
         const _ignoreFilePath = ignoreFilePath ? locate(ignoreFilePath) : null;
 
@@ -119,9 +111,6 @@ const command: Command = async function (args, flags) {
             return true;
         });
 
-        if (manifestExists) {
-        }
-
         const manifest: CompilationData = manifestExists
             ? {
                   ...JSON.parse(await readFile(manifestPath, 'utf-8')),
@@ -135,6 +124,14 @@ const command: Command = async function (args, flags) {
             manifestExists ? 'updated' : 'generated'
         } at ${manifestPath}`;
     }
+
+    const templateManager = TemplateManager();
+
+    const templateData = await templateManager.getTemplate(template);
+
+    const parser = ParseMultiMarkdown();
+    const engine = TemplateEngine();
+    const generator = PdfGenerator(templateData.path, port, margins);
 
     if (ignoreFilePath) {
         console.log(

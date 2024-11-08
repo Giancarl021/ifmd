@@ -1,5 +1,4 @@
 import TempManager from './TempManager';
-import constants from '../util/constants';
 import WebServer from './WebServer';
 import type TemplateData from '../interfaces/TemplateData';
 import TemplateEngine from './TemplateEngine';
