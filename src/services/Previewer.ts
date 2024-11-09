@@ -1,9 +1,7 @@
 import TempManager from './TempManager';
-import constants from '../util/constants';
 import WebServer from './WebServer';
-import TemplateData from '../interfaces/TemplateData';
-import LocalAsset from '../interfaces/LocalAsset';
-import { existsSync } from 'fs';
+import type TemplateData from '../interfaces/TemplateData';
+import type LocalAsset from '../interfaces/LocalAsset';
 
 export default function Previewer(template: TemplateData, port: number) {
     const temp = TempManager();

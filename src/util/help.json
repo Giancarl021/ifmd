@@ -109,6 +109,18 @@
                 "optional": true,
                 "values": ["<path/to/file>"]
             },
+            "m": {
+                "aliases": ["margin"],
+                "description": "Margin value for all sides of the rendered PDF",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
+            "mt": {
+                "aliases": ["margin-top"],
+                "description": "Margin top of the rendered PDF. Overwrites the `--margin` flag",
+                "optional": true,
+                "values": ["<value>", "<value>px", "<value>cm"]
+            },
             "d": {
                 "aliases": ["date"],
                 "description": "Sets the date of the documents, defaults to `Date.now()`",
