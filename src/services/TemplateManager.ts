@@ -61,20 +61,6 @@ export default function TemplateManager() {
 
         const { name, createdAt: createdAtStr } = manifestData;
 
-        require('fs').writeFileSync(
-            '/home/giancarl021/tcc/Arquivos/templateManager.json',
-            JSON.stringify(
-                {
-                    name: name,
-                    path: locate(directory),
-                    createdAt: new Date(createdAtStr),
-                    isNative
-                },
-                null,
-                2
-            )
-        );
-
         return {
             name: name,
             path: locate(directory),
