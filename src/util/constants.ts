@@ -24,6 +24,8 @@ export default {
         defaultTemplateName: 'Document',
         defaultSampleTemplateFile: locate('src/templates/sample.md')
     },
+    containerMode:
+        String(process.env.IFMD_CONTAINER_MODE).toLowerCase() === 'true',
     compilation: {
         getDefaultManifest(root: string, files: string[]) {
             const manifest: CompilationData = {

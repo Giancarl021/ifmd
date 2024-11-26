@@ -1,7 +1,9 @@
-import puppeteer, { PDFMargin } from 'puppeteer';
+import puppeteer, { type PDFMargin } from 'puppeteer';
 import TempManager from './TempManager';
 import WebServer from './WebServer';
-import LocalAsset from '../interfaces/LocalAsset';
+import constants from '../util/constants';
+
+import type LocalAsset from '../interfaces/LocalAsset';
 
 export default function PdfGenerator(
     templatePath: string,
@@ -13,7 +15,10 @@ export default function PdfGenerator(
 
     async function getPdf(indexPath: string): Promise<Buffer> {
         const browser = await puppeteer.launch({
-            headless: true
+            headless: true,
+            args: constants.containerMode
+                ? ['--no-sandbox', '--disable-setuid-sandbox']
+                : []
         });
 
         const page = await browser.newPage();
