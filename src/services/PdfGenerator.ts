@@ -16,9 +16,7 @@ export default function PdfGenerator(
     async function getPdf(indexPath: string): Promise<Buffer> {
         const browser = await puppeteer.launch({
             headless: true,
-            args: constants.containerMode
-                ? ['--no-sandbox', '--disable-setuid-sandbox']
-                : []
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
 
         const page = await browser.newPage();

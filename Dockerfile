@@ -62,7 +62,6 @@ COPY --from=build --chown=node:node /app/scripts/ ./scripts/
 COPY --from=build --chown=node:node /app/package.json /app/LICENSE ./
 
 ENV NODE_ENV=production
-ENV IFMD_CONTAINER_MODE=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium"
 ENV NPM_CONFIG_PREFIX=$HOME/.npm-global
