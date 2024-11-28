@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import DOMPurify, { type WindowLike } from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { CheerioAPI, load } from 'cheerio';
 import markedKatex from 'marked-katex-extension';
@@ -9,7 +9,7 @@ import constants from '../util/constants';
 import LocalAsset from '../interfaces/LocalAsset';
 import hash from '../util/hash';
 
-const window = new JSDOM('').window as unknown as Window;
+const window = new JSDOM('').window as unknown as WindowLike;
 const purify = DOMPurify(window);
 
 marked.use(

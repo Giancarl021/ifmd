@@ -1,7 +1,7 @@
 import parser from 'any-date-parser';
 import timestring from 'timestring';
 
-const parse: (date: string) => Date = parser.exportAsFunction().bind(parser);
+const parse: (date: string) => Date = parser.fromString.bind(parser);
 
 const defaultOperation = '+' as const;
 const allowedOperations: Readonly<DateOperator[]> = [defaultOperation, '-'];
