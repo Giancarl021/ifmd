@@ -8,6 +8,7 @@ import locate from '@giancarl021/locate';
 import constants from '../util/constants';
 import LocalAsset from '../interfaces/LocalAsset';
 import hash from '../util/hash';
+import parseAsset from '../util/parseAsset';
 
 const window = new JSDOM('').window as unknown as WindowLike;
 const purify = DOMPurify(window);
@@ -32,19 +33,9 @@ export default function ParseMarkdown() {
         const localAssets = $('[src], [href]')
             .map((_, element) => {
                 const $element = $(element);
-                const asset = String(
-                    $element.attr('src') ?? $element.attr('href')
-                );
+                const asset = $element.attr('src') ?? $element.attr('href');
 
-                if (!asset || asset.startsWith('http') || asset.startsWith('#'))
-                    return null;
-
-                const localAsset: LocalAsset = {
-                    originalPath: asset,
-                    path: locate(`${dirname(pathOfOrigin)}/${asset}`),
-                    reference: hash(`${pathOfOrigin}::${asset}`),
-                    owner: pathOfOrigin
-                };
+                const localAsset = parseAsset(asset, pathOfOrigin);
 
                 return localAsset;
             })
