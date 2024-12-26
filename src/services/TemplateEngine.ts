@@ -175,10 +175,12 @@ export default function TemplateEngine() {
 
     function applySetters(data: string, attributes: Variables): string {
         const _data = data.replace(/@@set\([a-zA-Z-_]+[0-9]*,.*?\)/g, match => {
-            const [key, value] = match
+            const [key, ...values] = match
                 .slice(6, -1)
                 .split(',')
                 .map(str => str.trim());
+
+            const value = values.join(',');
 
             if (Object.keys(attributes).includes(key)) return '';
 
