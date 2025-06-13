@@ -1,6 +1,6 @@
 {
     "name": "@giancarl021/ifmd",
-    "version": "0.1.22",
+    "version": "0.1.23",
     "description": "Markdown to PDF engine, allowing custom templates with the knowledge of web tecnologies",
     "main": "lib/index.js",
     "repository": "https://github.com/Giancarl021/ifmd.git",
@@ -19,12 +19,10 @@
         "ci": "yarn install --frozen-lockfile",
         "start": "node lib/bin.js",
         "docs": "cli-core-docs-generator generate ifmd ./src/util/help.json -o .github -a .github/docs/commands -f",
-        "prepreview": "yarn build",
-        "preview": "node lib/bin.js",
-        "build": "tsc -p tsconfig.lib.json",
+        "preview": "yarn build && node lib/bin.js",
+        "build": "tsc -p tsconfig.lib.json && node scripts/postbuild.js",
         "test": "jest --runInBand --detectOpenHandles",
         "test:coverage": "jest --runInBand --coverage --detectOpenHandles",
-        "postbuild": "node scripts/postbuild.js",
         "postinstall": "node scripts/postinstall.js"
     },
     "precommit": [
