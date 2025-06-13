@@ -1,6 +1,6 @@
 {
     "name": "@giancarl021/ifmd",
-    "version": "0.1.21",
+    "version": "0.1.22",
     "description": "Markdown to PDF engine, allowing custom templates with the knowledge of web tecnologies",
     "main": "lib/index.js",
     "repository": "https://github.com/Giancarl021/ifmd.git",
@@ -9,6 +9,7 @@
     "files": [
         "lib/**/*",
         "scripts/**/*",
+        "lib/src/templates/**/*",
         "!lib/tmp/"
     ],
     "bin": "lib/bin.js",
