@@ -13,7 +13,7 @@ jobs:
               with:
                   node-version: 22
             - run: sudo apt update && sudo apt install --yes libsecret-1-dev
-            - run: corepack install -g yarn@latest
+            - run: corepack install -g yarn@4.9.2 && corepack enable yarn
             - run: yarn install --frozen-lockfile
             - run: yarn build
             - run: yarn "test:coverage"
