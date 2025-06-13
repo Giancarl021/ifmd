@@ -8,7 +8,10 @@ ENV CI=true
 COPY package.json yarn.lock ./
 COPY scripts/ ./scripts/
 
-RUN yarn install --frozen-lockfile
+RUN corepack install --global yarn@4.9.2 &&\
+  corepack enable yarn
+
+RUN yarn install --immutable
 
 COPY . .
 
@@ -16,7 +19,7 @@ RUN yarn run build
 
 RUN rm -rf node_modules/
 
-RUN yarn install --frozen-lockfile --production
+RUN yarn install --immutable --production
 
 FROM node:22.11.0 AS production
 
