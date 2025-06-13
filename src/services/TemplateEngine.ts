@@ -174,19 +174,22 @@ export default function TemplateEngine() {
     }
 
     function applySetters(data: string, attributes: Variables): string {
-        const _data = data.replace(/@@set\([A-Z-_]+[A-Z0-9]*,.*?\)/gi, match => {
-            const [key, ...values] = match
-                .slice(6, -1)
-                .split(',')
-                .map(str => str.trim());
+        const _data = data.replace(
+            /@@set\([A-Z-_]+[A-Z0-9]*,.*?\)/gi,
+            match => {
+                const [key, ...values] = match
+                    .slice(6, -1)
+                    .split(',')
+                    .map(str => str.trim());
 
-            const value = values.join(',');
+                const value = values.join(',');
 
-            if (Object.keys(attributes).includes(key)) return '';
+                if (Object.keys(attributes).includes(key)) return '';
 
-            attributes[key] = value;
-            return '';
-        });
+                attributes[key] = value;
+                return '';
+            }
+        );
 
         return _data;
     }
