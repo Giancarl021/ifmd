@@ -5,7 +5,7 @@ WORKDIR /app
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV CI=true
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarn ./
 COPY scripts/ ./scripts/
 
 RUN corepack install --global yarn@4.9.2 &&\
