@@ -52,7 +52,7 @@ describe('services/ParseMarkdown', () => {
             )
         ).toEqual({
             content: expect.stringMatching(
-                /<p><img alt="image" src="\.\/image\.png">\n?<a href="\.\/tests\/services\/ParseMarkdown\.ts">link<\/a>\n?<a href="#jest-test-runner">localLink<\/a><\/p>/
+                /<p><img src="\.\/image\.png" alt="image">\n?<a href="\.\/tests\/services\/ParseMarkdown\.ts">link<\/a>\n?<a href="#jest-test-runner">localLink<\/a><\/p>/
             ),
             localAssets: [
                 {

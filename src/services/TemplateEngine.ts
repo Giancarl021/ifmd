@@ -174,7 +174,7 @@ export default function TemplateEngine() {
     }
 
     function applySetters(data: string, attributes: Variables): string {
-        const _data = data.replace(/@@set\([a-zA-Z-_]+[0-9]*,.*?\)/g, match => {
+        const _data = data.replace(/@@set\([A-Z-_]+[A-Z0-9]*,.*?\)/gi, match => {
             const [key, ...values] = match
                 .slice(6, -1)
                 .split(',')

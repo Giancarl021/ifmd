@@ -1,7 +1,6 @@
 import puppeteer, { type PDFMargin } from 'puppeteer';
 import TempManager from './TempManager';
 import WebServer from './WebServer';
-import constants from '../util/constants';
 
 import type LocalAsset from '../interfaces/LocalAsset';
 

@@ -2,12 +2,9 @@ import { marked } from 'marked';
 import DOMPurify, { type WindowLike } from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { CheerioAPI, load } from 'cheerio';
-import markedKatex from 'marked-katex-extension';
-import { basename, dirname } from 'path';
-import locate from '@giancarl021/locate';
+import markedKatex, { type MarkedKatexOptions } from 'marked-katex-extension';
+import { basename } from 'path';
 import constants from '../util/constants';
-import LocalAsset from '../interfaces/LocalAsset';
-import hash from '../util/hash';
 import parseAsset from '../util/parseAsset';
 
 const window = new JSDOM('').window as unknown as WindowLike;
@@ -17,7 +14,7 @@ marked.use(
     markedKatex({
         throwOnError: false,
         output: 'mathml'
-    })
+    } as MarkedKatexOptions)
 );
 
 export default function ParseMarkdown() {
